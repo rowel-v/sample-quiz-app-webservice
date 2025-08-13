@@ -1,0 +1,37 @@
+package com.example.quizApp.controller.student;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.quizApp.dto.student.StudentDto;
+import com.example.quizApp.service.result.Result;
+import com.example.quizApp.service.student.StudentService;
+
+import lombok.RequiredArgsConstructor;
+
+@RequestMapping("student")
+@RestController @RequiredArgsConstructor
+public class StudentController {
+	
+	private final StudentService studentService;
+	
+	@PostMapping("save")
+	ResponseEntity<?> saveStudentIdentity(@RequestBody StudentDto studentDto) {
+		
+		Result.Save res = studentService.saveIdentity(studentDto);
+		
+		return switch (res) {
+		case SAVE_SUCCESS -> ResponseEntity.ok().build();
+		};
+	}
+	
+	@GetMapping("data")
+	ResponseEntity<StudentDto> getStudentIdentity() {
+		return ResponseEntity.ok(studentService.getIdentity());
+	}
+
+}

@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: quiz-app
+  datasource:
+    url: jdbc:postgresql://ep-frosty-dew-a1qhchnr-pooler.ap-southeast-1.aws.neon.tech/quizAppDB
+    username: neondb_owner
+    password: npg_IwJ5eHhWLN0u
+    hikari:
+      max-lifetime: 300000
+      idle-timeout: 60000
+      validation-timeout: 5000
+  jpa:
+    show-sql: true
