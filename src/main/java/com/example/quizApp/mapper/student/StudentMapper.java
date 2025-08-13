@@ -12,7 +12,6 @@ public interface StudentMapper {
 	
 	public static final StudentMapper INSTANCE = Mappers.getMapper(StudentMapper.class);
 	
-	@Mapping(target = "account.createdAt", ignore = true)
 	public StudentIdentity toEntity(StudentDto studentDto);
 	
 	@Mapping(target = "account.password", constant = "PROTECTED")
