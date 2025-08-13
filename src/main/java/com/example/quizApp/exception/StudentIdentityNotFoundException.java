@@ -1,4 +1,4 @@
-package com.example.quizApp.exception.handler;
+package com.example.quizApp.exception;
 
 public class StudentIdentityNotFoundException extends RuntimeException {
 

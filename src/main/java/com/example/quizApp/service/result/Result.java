@@ -26,7 +26,8 @@ public class Result {
 	
 	
 	public enum Save {
-		SAVE_SUCCESS	
+		SAVE_SUCCESS,
+		ALREADY_SAVE
 	}
 
 }

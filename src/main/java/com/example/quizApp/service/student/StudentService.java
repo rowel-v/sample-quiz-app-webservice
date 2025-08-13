@@ -6,8 +6,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.quizApp.dto.student.StudentDto;
-import com.example.quizApp.exception.StudentAlreadySaveException;
-import com.example.quizApp.exception.handler.StudentIdentityNotFoundException;
+import com.example.quizApp.exception.StudentIdentityNotFoundException;
 import com.example.quizApp.mapper.student.StudentMapper;
 import com.example.quizApp.model.student.StudentIdentity;
 import com.example.quizApp.repo.student.StudentRepo;
@@ -29,31 +28,24 @@ public class StudentService {
 	public Result.Save saveIdentity(StudentDto studentDto) {
 		StudentIdentity student = StudentMapper.INSTANCE.toEntity(studentDto);
 
-		var username = SecurityContextHolder.getContext().getAuthentication().getName();
+		var username = this.username.get();
+		var account = studentAccountRepo.findByUsername(username).get();
 
-		studentAccountRepo.findByUsername(username)
-		.ifPresentOrElse(studentAccount -> {	
-			if (studentAccount.getStudent() != null) throw new StudentAlreadySaveException();
+		if (account.getStudent() != null) return Save.ALREADY_SAVE;
 
-			student.setAccount(studentAccount);
-			studentRepo.save(student);
-
-			System.out.println(student);
-		}, () -> System.out.println("rowel"));
-
+		student.setAccount(account);
+		studentRepo.save(student);
 		return Save.SAVE_SUCCESS;
 	}
-	
+
 	public StudentDto getIdentity() {
-		var username = SecurityContextHolder.getContext().getAuthentication().getName();
-		return studentAccountRepo.findByUsername(username)
+		return studentAccountRepo.findByUsername(username.get())
 				.map(acc -> StudentMapper.INSTANCE.tDto(acc.getStudent()))
 				.orElseThrow(() -> new StudentIdentityNotFoundException());	
 	}
 
 	public void updateIdentity(StudentDto studentDto) {
 		studentAccountRepo.findByUsername(username.get()).ifPresent(acc -> {
-			
 			StudentIdentity request = StudentMapper.INSTANCE.toEntity(studentDto);
 			// check the request data if not equal in a persisted entity (i.e., firstname, lastname & fullname)
 			if (!acc.getStudent().equals(request)) {

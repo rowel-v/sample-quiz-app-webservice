@@ -21,12 +21,13 @@ public class StudentController {
 	private final StudentService studentService;
 	
 	@PostMapping("save")
-	ResponseEntity<?> saveStudentIdentity(@RequestBody StudentDto studentDto) {
+	ResponseEntity<String> saveStudentIdentity(@RequestBody StudentDto studentDto) {
 		
 		Save result = studentService.saveIdentity(studentDto);
 		
 		return switch (result) {
 		case SAVE_SUCCESS -> ResponseEntity.ok().build();
+		case ALREADY_SAVE -> ResponseEntity.status(409).body("Already Save");
 		};
 	}
 	
