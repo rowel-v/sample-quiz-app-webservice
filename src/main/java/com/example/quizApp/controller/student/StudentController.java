@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.student.StudentDto;
-import com.example.quizApp.service.result.Result;
+import com.example.quizApp.service.result.Result.Save;
 import com.example.quizApp.service.student.StudentService;
 
 import lombok.RequiredArgsConstructor;
@@ -22,9 +22,9 @@ public class StudentController {
 	@PostMapping("save")
 	ResponseEntity<?> saveStudentIdentity(@RequestBody StudentDto studentDto) {
 		
-		Result.Save res = studentService.saveIdentity(studentDto);
+		Save result = studentService.saveIdentity(studentDto);
 		
-		return switch (res) {
+		return switch (result) {
 		case SAVE_SUCCESS -> ResponseEntity.ok().build();
 		};
 	}

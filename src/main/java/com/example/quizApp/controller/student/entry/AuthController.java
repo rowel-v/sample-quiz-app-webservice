@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.student.account.StudentAccountDto;
-import com.example.quizApp.service.result.Result;
+import com.example.quizApp.service.result.Result.Login;
 import com.example.quizApp.service.student.account.StudentAccountService;
 
 import jakarta.validation.Valid;
@@ -21,10 +21,10 @@ public class AuthController {
 	@PostMapping("login")
 	ResponseEntity<?> LoginReq(@RequestBody @Valid StudentAccountDto sAccountDto) {
 		
-		Result.Login res = sAccountService.loginAccount(sAccountDto);
+		Login result = sAccountService.loginAccount(sAccountDto);
 		
-		return switch (res) {
-		case LOGIN_SUCCESS -> ResponseEntity.ok().body(res.getData());
+		return switch (result) {
+		case LOGIN_SUCCESS -> ResponseEntity.ok().body(result.getData());
 		case ACCOUNT_NOT_MATCH -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		};
 	}
