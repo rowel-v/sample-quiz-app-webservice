@@ -1,5 +1,7 @@
 package com.example.quizApp.service.student;
 
+import java.util.function.Supplier;
+
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -17,26 +19,28 @@ import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor
 public class StudentService {
-	
+
 	private final StudentAccountRepo studentAccountRepo;
 	private final StudentRepo studentRepo;
-	
+
+	private Supplier<String> username = () -> SecurityContextHolder.getContext().getAuthentication().getName();
+
 	// student can be save one time only, it can be update in Result.Update
 	public Result.Save saveIdentity(StudentDto studentDto) {
 		StudentIdentity student = StudentMapper.INSTANCE.toEntity(studentDto);
-		
+
 		var username = SecurityContextHolder.getContext().getAuthentication().getName();
-		
+
 		studentAccountRepo.findByUsername(username)
 		.ifPresentOrElse(studentAccount -> {	
 			if (studentAccount.getStudent() != null) throw new StudentAlreadySaveException();
-			
+
 			student.setAccount(studentAccount);
 			studentRepo.save(student);
-			
+
 			System.out.println(student);
 		}, () -> System.out.println("rowel"));
-		
+
 		return Save.SAVE_SUCCESS;
 	}
 	
@@ -46,5 +50,20 @@ public class StudentService {
 				.map(acc -> StudentMapper.INSTANCE.tDto(acc.getStudent()))
 				.orElseThrow(() -> new StudentIdentityNotFoundException());	
 	}
-	
+
+	public void updateIdentity(StudentDto studentDto) {
+		studentAccountRepo.findByUsername(username.get()).ifPresent(acc -> {
+			
+			StudentIdentity request = StudentMapper.INSTANCE.toEntity(studentDto);
+			// check the request data if not equal in a persisted entity (i.e., firstname, lastname & fullname)
+			if (!acc.getStudent().equals(request)) {
+				acc.getStudent().setFirstname(studentDto.getFirstname());
+				acc.getStudent().setLastname(studentDto.getLastname());
+				studentAccountRepo.save(acc);
+			}
+		});
+	}
+
+
+
 }
