@@ -24,7 +24,7 @@ public class StudentController {
 	private final StudentService studentService;
 	
 	@PostMapping("save")
-	ResponseEntity<String> saveStudentIdentity(@RequestBody StudentDto studentDto) {
+	ResponseEntity<String> saveStudent(@RequestBody StudentDto studentDto) {
 		
 		Save result = studentService.saveIdentity(studentDto);
 		
@@ -35,12 +35,12 @@ public class StudentController {
 	}
 	
 	@GetMapping("data")
-	ResponseEntity<StudentDto> getStudentIdentity() {
+	ResponseEntity<StudentDto> getStudent() {
 		return ResponseEntity.ok(studentService.getIdentity());
 	}
 	
 	@PutMapping("update")
-	ResponseEntity<Void> updateStudentIdentity(@RequestBody StudentDto studentDto) {
+	ResponseEntity<Void> updateStudent(@RequestBody StudentDto studentDto) {
 		studentService.updateIdentity(studentDto);
 		return ResponseEntity.noContent().build();
 	}
@@ -52,8 +52,10 @@ public class StudentController {
 	}
 	
 	@GetMapping
-	ResponseEntity<List<StudentDto>> getAllStudentIdentity() {
+	ResponseEntity<List<StudentDto>> getAllStudent() {
 		return ResponseEntity.ok(studentService.getAllIdentity());
 	}
+	
+	
 	
 }

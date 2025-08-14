@@ -1,6 +1,6 @@
 package com.example.quizApp.exception;
 
-public class StudentIdentityNotFoundException extends RuntimeException {
+public class StudentNotFoundException extends RuntimeException {
 
 	/**
 	 * 

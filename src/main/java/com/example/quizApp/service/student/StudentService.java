@@ -8,9 +8,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.example.quizApp.dto.student.StudentDto;
-import com.example.quizApp.exception.StudentIdentityNotFoundException;
+import com.example.quizApp.exception.StudentNotFoundException;
 import com.example.quizApp.mapper.student.StudentMapper;
-import com.example.quizApp.model.student.StudentIdentity;
+import com.example.quizApp.model.student.Student;
 import com.example.quizApp.repo.student.StudentRepo;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
 import com.example.quizApp.security.service.StudentDetails;
@@ -32,7 +32,7 @@ public class StudentService {
 
 	// student can be save one time only, it can be update in Result.Update
 	public Result.Save saveIdentity(StudentDto studentDto) {
-		StudentIdentity student = StudentMapper.INSTANCE.toEntity(studentDto);
+		Student student = StudentMapper.INSTANCE.toEntity(studentDto);
 
 		var username = this.username.get();
 		var account = studentAccountRepo.findByUsername(username).get();
@@ -46,13 +46,13 @@ public class StudentService {
 
 	public StudentDto getIdentity() {
 		return studentAccountRepo.findByUsername(username.get())
-				.map(acc -> StudentMapper.INSTANCE.tDto(acc.getStudent()))
-				.orElseThrow(() -> new StudentIdentityNotFoundException());	
+				.map(acc -> StudentMapper.INSTANCE.toDto(acc.getStudent()))
+				.orElseThrow(() -> new StudentNotFoundException());	
 	}
 
 	public void updateIdentity(StudentDto studentDto) {
 		studentAccountRepo.findByUsername(username.get()).ifPresent(acc -> {
-			StudentIdentity request = StudentMapper.INSTANCE.toEntity(studentDto);
+			Student request = StudentMapper.INSTANCE.toEntity(studentDto);
 			// check the request data if not equal in a persisted entity (i.e., firstname, lastname & fullname)
 			if (!acc.getStudent().equals(request)) {
 				acc.getStudent().setFirstname(studentDto.getFirstname());
@@ -68,7 +68,7 @@ public class StudentService {
 	}
 	
 	public List<StudentDto> getAllIdentity() {	
-		return studentRepo.findAll().stream().map(StudentMapper.INSTANCE::tDto).collect(Collectors.toList());
+		return studentRepo.findAll().stream().map(StudentMapper.INSTANCE::toDto).collect(Collectors.toList());
 	}
 
 

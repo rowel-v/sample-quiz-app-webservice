@@ -19,7 +19,7 @@ import lombok.Setter;
 
 @Entity @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @Table(name = "student_identity", schema = "student_schema")
-public class StudentIdentity {
+public class Student {
 	
 	@GeneratedValue(strategy = GenerationType.IDENTITY) @Setter(AccessLevel.NONE) 
 	@Id private Long id;
@@ -37,7 +37,7 @@ public class StudentIdentity {
 	private StudentAccount account;
 
 	@Builder
-	private StudentIdentity(String firstname, String lastname, StudentAccount account) {
+	private Student(String firstname, String lastname, StudentAccount account) {
 		super();
 		this.firstname = firstname;
 		this.lastname = lastname;
@@ -72,7 +72,7 @@ public class StudentIdentity {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		StudentIdentity other = (StudentIdentity) obj;
+		Student other = (Student) obj;
 		return Objects.equals(firstname, other.firstname) && Objects.equals(fullname, other.fullname)
 				&& Objects.equals(lastname, other.lastname);
 	}

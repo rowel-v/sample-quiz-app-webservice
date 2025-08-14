@@ -2,7 +2,7 @@ package com.example.quizApp.model.student.account;
 
 import java.time.LocalDateTime;
 
-import com.example.quizApp.model.student.StudentIdentity;
+import com.example.quizApp.model.student.Student;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -32,7 +32,7 @@ public class StudentAccount {
 	private LocalDateTime createdAt;
 	
 	@OneToOne(mappedBy = "account", fetch = FetchType.LAZY) @Setter(value = AccessLevel.NONE)
-	@Getter private StudentIdentity student;
+	@Getter private Student student;
 
 	@Builder
 	private StudentAccount(String username, String password) {
