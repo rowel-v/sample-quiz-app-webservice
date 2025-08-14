@@ -1,6 +1,5 @@
 package com.example.quizApp.security.service;
 
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,10 +17,13 @@ public class StudentAccountDetailsService implements UserDetailsService {
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		
-		StudentAccount acc = studentAccountRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("not found username"));
-		return User.builder()
+		StudentAccount acc = studentAccountRepo.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("not found username"));
+		
+		return StudentDetails.builder()
 		.username(acc.getUsername())
 		.password(acc.getPassword())
+		.fullname(acc.getStudent().getFullname())
 		.build();
 	}
 
