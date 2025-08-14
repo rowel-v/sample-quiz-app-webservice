@@ -11,9 +11,11 @@ import com.example.quizApp.mapper.student.StudentMapper;
 import com.example.quizApp.model.student.StudentIdentity;
 import com.example.quizApp.repo.student.StudentRepo;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
+import com.example.quizApp.security.service.StudentDetails;
 import com.example.quizApp.service.result.Result;
 import com.example.quizApp.service.result.Result.Save;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor
@@ -23,6 +25,8 @@ public class StudentService {
 	private final StudentRepo studentRepo;
 
 	private Supplier<String> username = () -> SecurityContextHolder.getContext().getAuthentication().getName();
+	private Supplier<StudentDetails> studentDetails = () -> (StudentDetails) SecurityContextHolder.getContext()
+			.getAuthentication().getPrincipal();
 
 	// student can be save one time only, it can be update in Result.Update
 	public Result.Save saveIdentity(StudentDto studentDto) {
@@ -54,6 +58,11 @@ public class StudentService {
 				studentAccountRepo.save(acc);
 			}
 		});
+	}
+	
+	@Transactional
+	public void deleteAccount() {		
+		studentRepo.deleteByFullname(studentDetails.get().getFullname());
 	}
 
 

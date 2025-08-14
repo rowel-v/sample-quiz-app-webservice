@@ -32,7 +32,7 @@ public class StudentIdentity {
 	private String fullname;
 	
 	@Getter @Setter
-	@OneToOne
+	@OneToOne(orphanRemoval = true)
 	@JoinColumn(name = "account_id")
 	private StudentAccount account;
 
