@@ -1,5 +1,7 @@
 package com.example.quizApp.controller.student;
 
+import java.util.List;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -47,6 +49,11 @@ public class StudentController {
 	ResponseEntity<Void> deleteStudentAccount() {
 		studentService.deleteAccount();
 		return ResponseEntity.noContent().build();
+	}
+	
+	@GetMapping
+	ResponseEntity<List<StudentDto>> getAllStudentIdentity() {
+		return ResponseEntity.ok(studentService.getAllIdentity());
 	}
 	
 }

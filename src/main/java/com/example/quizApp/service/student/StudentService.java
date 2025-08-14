@@ -1,6 +1,8 @@
 package com.example.quizApp.service.student;
 
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -63,6 +65,10 @@ public class StudentService {
 	@Transactional
 	public void deleteAccount() {		
 		studentRepo.deleteByFullname(studentDetails.get().getFullname());
+	}
+	
+	public List<StudentDto> getAllIdentity() {	
+		return studentRepo.findAll().stream().map(StudentMapper.INSTANCE::tDto).collect(Collectors.toList());
 	}
 
 
