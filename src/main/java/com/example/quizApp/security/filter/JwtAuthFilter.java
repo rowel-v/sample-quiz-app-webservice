@@ -64,7 +64,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 			
 			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 			
-			if (auth.isAuthenticated() && SecurityContextHolder.getContext().getAuthentication() == null) {
+			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
 		}
@@ -74,7 +74,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
 	private boolean requestIsPublic(String reqURI) {
-		return entryEndPoint.stream().anyMatch(reqURI::startsWith);
+		return entryEndPoint.stream().anyMatch(reqURI::matches);
 	}
 
 	private boolean authHeaderNotInFormat(String header) {

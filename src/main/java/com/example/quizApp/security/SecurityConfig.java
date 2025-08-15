@@ -2,6 +2,7 @@ package com.example.quizApp.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,7 +28,9 @@ public class SecurityConfig {
 		return httpSecurity
 				.csrf(c -> c.disable())
 				.authorizeHttpRequests(req -> req
-						.requestMatchers("/login", "/signup", "student")
+						.requestMatchers(HttpMethod.GET, "/student")
+						.permitAll()
+						.requestMatchers(HttpMethod.POST, "/login", "/signup")
 						.permitAll()
 						.anyRequest()
 						.authenticated())
