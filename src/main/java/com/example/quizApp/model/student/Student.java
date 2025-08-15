@@ -2,6 +2,8 @@ package com.example.quizApp.model.student;
 
 import java.util.Objects;
 
+import org.hibernate.annotations.Formula;
+
 import com.example.quizApp.model.student.account.StudentAccount;
 
 import jakarta.persistence.Entity;
@@ -28,11 +30,12 @@ public class Student {
 	private String firstname;
 	@Getter
 	private String lastname;
-	@Getter
+	
+	@Getter @Formula("concat(firstname, ' ', lastname)")
 	private String fullname;
 	
 	@Getter @Setter
-	@OneToOne(orphanRemoval = true)
+	@OneToOne
 	@JoinColumn(name = "account_id")
 	private StudentAccount account;
 
@@ -42,7 +45,7 @@ public class Student {
 		this.firstname = firstname;
 		this.lastname = lastname;
 		this.account = account;
-		updateFullname();;
+		updateFullname();
 	}
 	
 	public void setFirstname(String firstname) {

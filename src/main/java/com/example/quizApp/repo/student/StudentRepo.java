@@ -8,7 +8,5 @@ import com.example.quizApp.model.student.Student;
 @Repository
 public interface StudentRepo extends JpaRepository<Student, Long> {
 	
-	void deleteByFullname(String fullname);
-	
 }
 	
