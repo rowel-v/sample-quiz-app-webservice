@@ -1,5 +1,6 @@
 package com.example.quizApp.controller.student;
 
+import java.net.URI;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
@@ -29,7 +30,7 @@ public class StudentController {
 		Save result = studentService.saveIdentity(studentDto);
 		
 		return switch (result) {
-		case SAVE_SUCCESS -> ResponseEntity.ok().build();
+		case SAVE_SUCCESS -> ResponseEntity.created(URI.create("student/data")).build();
 		case ALREADY_SAVE -> ResponseEntity.status(409).body("Already Save");
 		};
 	}
