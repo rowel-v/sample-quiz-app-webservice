@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Table(name = "student_account", schema = "student_schema")
-@Data @Entity @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Data @Entity @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class StudentAccount {
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Setter(value = AccessLevel.NONE)

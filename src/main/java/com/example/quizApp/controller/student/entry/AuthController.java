@@ -19,7 +19,7 @@ public class AuthController {
 	private final StudentAccountService sAccountService;
 	
 	@PostMapping("login")
-	ResponseEntity<?> LoginReq(@RequestBody @Valid StudentAccountDto sAccountDto) {
+	public ResponseEntity<?> LoginReq(@RequestBody @Valid StudentAccountDto sAccountDto) {
 		
 		Login result = sAccountService.loginAccount(sAccountDto);
 		

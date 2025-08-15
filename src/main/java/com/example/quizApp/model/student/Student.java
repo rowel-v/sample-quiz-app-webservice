@@ -20,7 +20,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Entity @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "student_identity", schema = "student_schema")
 public class Student {
 	

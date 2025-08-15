@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -60,10 +61,17 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		if (username != null) {
 
-			UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-			
+			UserDetails userDetails;
+
+			try {
+				userDetails = userDetailsService.loadUserByUsername(username);
+			} catch (UsernameNotFoundException e) {
+				filterChain.doFilter(request, response);
+				return;
+			}
+
 			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-			
+
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				SecurityContextHolder.getContext().setAuthentication(auth);
 			}
