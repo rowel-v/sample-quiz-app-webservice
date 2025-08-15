@@ -12,5 +12,4 @@ public interface StudentAccountRepo extends JpaRepository<StudentAccount, Long>{
 	
 	Optional<StudentAccount> findByUsername(String username);
 	
-
 }

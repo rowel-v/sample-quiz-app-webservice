@@ -31,8 +31,10 @@ public class StudentAccount {
 	
 	private LocalDateTime createdAt;
 	
-	@OneToOne(mappedBy = "account", fetch = FetchType.LAZY) @Setter(value = AccessLevel.NONE)
-	@Getter private Student student;
+	@OneToOne(mappedBy = "account", fetch = FetchType.LAZY, orphanRemoval = true)
+	@Getter
+	@Setter(value = AccessLevel.NONE)
+	private Student student;
 
 	@Builder
 	private StudentAccount(String username, String password) {

@@ -16,7 +16,8 @@ public class StudentDto {
 	private String firstname;
 	@NotBlank
 	private String lastname;
-	
+	@NotBlank
+	private String fullname;
 	@NotNull
 	private StudentAccountDto account;
 		

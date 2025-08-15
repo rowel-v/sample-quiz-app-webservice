@@ -9,7 +9,7 @@ import lombok.Builder;
 
 @Builder
 public class StudentDetails implements UserDetails {
-	
+
 	/**
 	 * 
 	 */
@@ -17,10 +17,10 @@ public class StudentDetails implements UserDetails {
 
 	private final String username;
 	private final String password;
-	private final String fullname;
-	
+	private final Long accountId;
+
 	private Collection<? extends GrantedAuthority> authorities;
-	
+
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		return authorities;
@@ -35,9 +35,9 @@ public class StudentDetails implements UserDetails {
 	public String getUsername() {
 		return username;
 	}
-	
-	public String getFullname() {
-		return fullname;
+
+	public Long getAccountId() {
+		return accountId;
 	}
 
 }

@@ -23,7 +23,7 @@ public class StudentAccountDetailsService implements UserDetailsService {
 		return StudentDetails.builder()
 		.username(acc.getUsername())
 		.password(acc.getPassword())
-		.fullname(acc.getStudent() == null ? null : acc.getStudent().getFullname())
+		.accountId(acc.getId())
 		.build();
 	}
 

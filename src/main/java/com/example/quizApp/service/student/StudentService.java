@@ -63,8 +63,8 @@ public class StudentService {
 	}
 	
 	@Transactional
-	public void deleteAccount() {		
-		studentRepo.deleteByFullname(studentDetails.get().getFullname());
+	public void deleteAccount() {	
+		studentAccountRepo.deleteById(studentDetails.get().getAccountId());
 	}
 	
 	public List<StudentDto> getAllIdentity() {	
