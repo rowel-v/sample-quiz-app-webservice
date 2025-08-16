@@ -16,7 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController @RequiredArgsConstructor
-public class SignupController {
+public class StudentSignupController {
 	
 	private final StudentAccountService service;
 	

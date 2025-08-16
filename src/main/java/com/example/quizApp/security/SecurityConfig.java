@@ -30,7 +30,9 @@ public class SecurityConfig {
 				.authorizeHttpRequests(req -> req
 						.requestMatchers(HttpMethod.GET, "/student")
 						.permitAll()
-						.requestMatchers(HttpMethod.POST, "/login", "/signup")
+						.requestMatchers(HttpMethod.POST, "/student/login", "/student/signup")
+						.permitAll()
+						.requestMatchers(HttpMethod.POST, "/teacher/login", "/teacher/signup")
 						.permitAll()
 						.anyRequest()
 						.authenticated())
