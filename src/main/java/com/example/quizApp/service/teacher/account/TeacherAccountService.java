@@ -1,7 +1,5 @@
 package com.example.quizApp.service.teacher.account;
 
-import java.util.List;
-
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,7 +11,6 @@ import com.example.quizApp.mapper.teacher.account.TeacherAccountMapper;
 import com.example.quizApp.model.teacher.account.TeacherAccount;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
 import com.example.quizApp.result.Result;
-import com.example.quizApp.result.Result.Login;
 import com.example.quizApp.result.Result.Signup;
 import com.example.quizApp.security.JwtUtil;
 
@@ -27,16 +24,15 @@ public class TeacherAccountService {
 	private final JwtUtil jwtUtil;
 	private final PasswordEncoder passwordEncoder;
 	
-	public Result.Login loginRequest(TeacherAccountDto accountDto) {
+	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
+	public String loginRequest(TeacherAccountDto accountDto) {
 		
 		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				accountDto.getUsername(), accountDto.getPassword()));
 		
-		if (!authentication.isAuthenticated()) return Login.ACCOUNT_NOT_MATCH;
+		if (authentication.isAuthenticated()) return jwtUtil.generateToken(accountDto.getUsername());
 		
-		Result.Login res = Login.LOGIN_SUCCESS;
-		res.setData(jwtUtil.generateToken(accountDto.getUsername()));
-		return res;
+		return null;
 	}
 	
 	public Result.Signup signupRequest(TeacherAccountDto accountDto) {
@@ -49,9 +45,5 @@ public class TeacherAccountService {
 				    teacherAccountRepo.save(teacherAccount);
 					return Signup.SIGNUP_SUCCESS;
 				});
-	}
-	
-	public List<TeacherAccount> getAll() {
-		return teacherAccountRepo.findAll();
 	}
 }

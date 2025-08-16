@@ -11,7 +11,6 @@ import com.example.quizApp.mapper.student.account.StudentAccountMapper;
 import com.example.quizApp.model.student.account.StudentAccount;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
 import com.example.quizApp.result.Result;
-import com.example.quizApp.result.Result.Login;
 import com.example.quizApp.security.JwtUtil;
 
 import lombok.RequiredArgsConstructor;
@@ -39,16 +38,14 @@ public class StudentAccountService {
 				});
 	}
 	
-	public Result.Login loginAccount(StudentAccountDto accountDto) {
+	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
+	public String loginAccount(StudentAccountDto accountDto) {
 		
-		StudentAccount account = StudentAccountMapper.INSTANCE.toEntity(accountDto);
+		Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(
+				accountDto.getUsername(), accountDto.getPassword()));
 		
-		Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(account.getUsername(), account.getPassword()));
+		if (auth.isAuthenticated()) return jwtUtil.generateToken(auth.getName());
 		
-		if (!auth.isAuthenticated()) return Login.ACCOUNT_NOT_MATCH;
-		
-		Result.Login r = Login.LOGIN_SUCCESS;
-		r.setData(jwtUtil.generateToken(auth.getName()));
-		return r;
+		return null;
 	}
 }
