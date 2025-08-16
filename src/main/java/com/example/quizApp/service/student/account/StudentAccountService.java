@@ -10,9 +10,9 @@ import com.example.quizApp.dto.student.account.StudentAccountDto;
 import com.example.quizApp.mapper.student.account.StudentAccountMapper;
 import com.example.quizApp.model.student.account.StudentAccount;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
+import com.example.quizApp.result.Result;
+import com.example.quizApp.result.Result.Login;
 import com.example.quizApp.security.JwtUtil;
-import com.example.quizApp.service.result.Result;
-import com.example.quizApp.service.result.Result.Login;
 
 import lombok.RequiredArgsConstructor;
 

@@ -12,10 +12,10 @@ import com.example.quizApp.dto.teacher.account.TeacherAccountDto;
 import com.example.quizApp.mapper.teacher.account.TeacherAccountMapper;
 import com.example.quizApp.model.teacher.account.TeacherAccount;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
+import com.example.quizApp.result.Result;
+import com.example.quizApp.result.Result.Login;
+import com.example.quizApp.result.Result.Signup;
 import com.example.quizApp.security.JwtUtil;
-import com.example.quizApp.service.result.Result;
-import com.example.quizApp.service.result.Result.Login;
-import com.example.quizApp.service.result.Result.Signup;
 
 import lombok.RequiredArgsConstructor;
 

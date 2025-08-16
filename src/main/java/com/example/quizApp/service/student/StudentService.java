@@ -14,9 +14,9 @@ import com.example.quizApp.mapper.student.StudentMapper;
 import com.example.quizApp.model.student.Student;
 import com.example.quizApp.repo.student.StudentRepo;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
+import com.example.quizApp.result.Result;
+import com.example.quizApp.result.Result.Save;
 import com.example.quizApp.security.service.StudentDetails;
-import com.example.quizApp.service.result.Result;
-import com.example.quizApp.service.result.Result.Save;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.teacher.account.TeacherAccountDto;
-import com.example.quizApp.service.result.Result.Login;
+import com.example.quizApp.result.Result.Login;
 import com.example.quizApp.service.teacher.account.TeacherAccountService;
 
 import jakarta.validation.Valid;

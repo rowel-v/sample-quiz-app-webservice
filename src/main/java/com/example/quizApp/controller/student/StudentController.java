@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.student.StudentDto;
-import com.example.quizApp.service.result.Result.Save;
+import com.example.quizApp.result.Result.Save;
 import com.example.quizApp.service.student.StudentService;
 
 import lombok.RequiredArgsConstructor;

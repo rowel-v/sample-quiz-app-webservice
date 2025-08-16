@@ -1,4 +1,4 @@
-package com.example.quizApp.service.result;
+package com.example.quizApp.result;
 
 import lombok.AccessLevel;
 import lombok.Getter;
