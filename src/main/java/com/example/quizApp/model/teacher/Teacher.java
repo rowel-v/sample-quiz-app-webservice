@@ -1,6 +1,9 @@
 package com.example.quizApp.model.teacher;
 
+import java.util.LinkedList;
 import java.util.List;
+
+import org.hibernate.annotations.Formula;
 
 import com.example.quizApp.model.teacher.account.TeacherAccount;
 import com.example.quizApp.model.teacher.sectionHandled.Section;
@@ -18,7 +21,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,23 +35,22 @@ public class Teacher {
 	private String firstname;
 	@Getter
 	private String lastname;
-	@Getter @Setter(value = AccessLevel.NONE)
+	@Getter @Formula("concat(firstname, ' ', fulname)")
 	private String fullname;
 	
 	@OneToOne
 	@JoinColumn(name = "account_id")
 	private TeacherAccount account;
 	
-	@Getter @Setter
+	@Getter // TODO setter vague
 	@OneToMany(mappedBy = "teacher")
-	private List<Section> sections;
+	private final List<Section> sections = new LinkedList<>();
 
 	@Builder
-	private Teacher(String firstname, String lastname, List<Section> sections) {
+	private Teacher(String firstname, String lastname) {
 		super();
 		this.firstname = firstname;
 		this.lastname = lastname;
-		this.sections = sections;
 		updateFullname();
 	}
 	
