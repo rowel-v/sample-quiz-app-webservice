@@ -1,6 +1,4 @@
-package com.example.quizApp.controller.student.entry;
-
-import java.net.URI;
+package com.example.quizApp.controller.student.account;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -9,24 +7,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.student.account.StudentAccountDto;
-import com.example.quizApp.result.Result.Signup;
+import com.example.quizApp.result.Result.Login;
 import com.example.quizApp.service.student.account.StudentAccountService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController @RequiredArgsConstructor
-public class StudentSignupController {
+public class StudentAuthController {
 	
-	private final StudentAccountService service;
+	private final StudentAccountService sAccountService;
 	
-	@PostMapping("signup")
-	ResponseEntity<?> signupReq(@RequestBody @Valid StudentAccountDto sDto) {
+	@PostMapping("login")
+	public ResponseEntity<?> LoginReq(@RequestBody @Valid StudentAccountDto sAccountDto) {
 		
-		Signup result = service.createAccount(sDto); 
+		Login result = sAccountService.loginAccount(sAccountDto);
+		
 		return switch (result) {
-		case SIGNUP_SUCCESS -> ResponseEntity.created(URI.create("login")).build();
-		case USERNAME_ALREADY_TAKEN -> ResponseEntity.status(HttpStatus.CONFLICT).build();
+		case LOGIN_SUCCESS -> ResponseEntity.ok().body(result.getData());
+		case ACCOUNT_NOT_MATCH -> ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		};
 	}
 
