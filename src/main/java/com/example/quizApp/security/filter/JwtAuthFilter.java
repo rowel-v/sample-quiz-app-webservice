@@ -6,13 +6,15 @@ import java.util.Set;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.example.quizApp.security.JwtUtil;
+import com.example.quizApp.security.service.student.StudentAccountDetailsService;
+import com.example.quizApp.security.service.student.StudentDetails;
+import com.example.quizApp.security.service.teacher.TeacherAccountDetailsService;
+import com.example.quizApp.security.service.teacher.TeacherDetails;
 
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -25,16 +27,22 @@ import lombok.RequiredArgsConstructor;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
 	private final Set<String> entryEndPoint = Set.of("/login", "/signup");
-	private final UserDetailsService userDetailsService;
+
+	private final StudentAccountDetailsService studentAccountDetailsService;
+	private final TeacherAccountDetailsService teacherAccountDetailsService;
+
 	private final JwtUtil jwtUtil;
 
 	private String username;
+	private String requestURI;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		if (requestIsPublic(request.getRequestURI())) {
+		requestURI = request.getRequestURI();
+
+		if (requestIsPublic(requestURI)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
@@ -61,16 +69,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 		if (username != null) {
 
-			UserDetails userDetails;
+			if (requestURI.startsWith("/student")) {
 
+				StudentDetails studentDetails;
+				try {
+					studentDetails = (StudentDetails) studentAccountDetailsService.loadUserByUsername(username);
+				} catch (UsernameNotFoundException e) {
+					filterChain.doFilter(request, response);
+					return;
+				}
+				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+						studentDetails, null, studentDetails.getAuthorities());
+
+				if (SecurityContextHolder.getContext().getAuthentication() == null) {
+					SecurityContextHolder.getContext().setAuthentication(auth);
+				}
+			}
+		} else if (requestURI.startsWith("/teacher")) {
+
+			TeacherDetails teacherDetails;
 			try {
-				userDetails = userDetailsService.loadUserByUsername(username);
+				teacherDetails = (TeacherDetails) teacherAccountDetailsService.loadUserByUsername(username);
 			} catch (UsernameNotFoundException e) {
 				filterChain.doFilter(request, response);
 				return;
 			}
-
-			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+					teacherDetails, null, teacherDetails.getAuthorities());
 
 			if (SecurityContextHolder.getContext().getAuthentication() == null) {
 				SecurityContextHolder.getContext().setAuthentication(auth);

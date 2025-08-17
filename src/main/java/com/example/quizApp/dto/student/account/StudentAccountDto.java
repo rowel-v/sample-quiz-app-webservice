@@ -5,12 +5,8 @@ import org.hibernate.validator.constraints.Length;
 import jakarta.validation.constraints.NotBlank;
 
 import lombok.Builder;
-import lombok.RequiredArgsConstructor;
 import lombok.Value;
 
-//@NoArgsConstructor(access = AccessLevel.PRIVATE)
-//@AllArgsConstructor(access = AccessLevel.PRIVATE)
-@RequiredArgsConstructor
 @Value
 @Builder
 public class StudentAccountDto {

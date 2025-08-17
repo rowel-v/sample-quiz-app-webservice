@@ -1,6 +1,7 @@
 package com.example.quizApp.service.student.account;
 
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,7 +24,7 @@ public class StudentAccountService {
 	private final PasswordEncoder pEncoder;
 	private final JwtUtil jwtUtil;
 	
-	private final AuthenticationManager authManager;
+	private final AuthenticationProvider studentAuthProvider;
 	
 	public Result.Signup createAccount(StudentAccountDto accountDto) {
 		
@@ -41,11 +42,11 @@ public class StudentAccountService {
 	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
 	public String loginAccount(StudentAccountDto accountDto) {
 		
-		Authentication auth = authManager.authenticate(new UsernamePasswordAuthenticationToken(
+		Authentication auth = studentAuthProvider.authenticate(new UsernamePasswordAuthenticationToken(
 				accountDto.getUsername(), accountDto.getPassword()));
 		
 		if (auth.isAuthenticated()) return jwtUtil.generateToken(auth.getName());
 		
-		return null;
+		throw new BadCredentialsException("Invalid Credentials");
 	}
 }

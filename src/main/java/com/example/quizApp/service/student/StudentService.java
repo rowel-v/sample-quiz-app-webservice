@@ -16,7 +16,7 @@ import com.example.quizApp.repo.student.StudentRepo;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
 import com.example.quizApp.result.Result;
 import com.example.quizApp.result.Result.Save;
-import com.example.quizApp.security.service.StudentDetails;
+import com.example.quizApp.security.service.student.StudentDetails;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
