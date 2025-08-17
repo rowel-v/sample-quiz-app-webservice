@@ -2,6 +2,7 @@ package com.example.quizApp.model.teacher;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 import org.hibernate.annotations.Formula;
 
@@ -35,7 +36,7 @@ public class Teacher {
 	private String firstname;
 	@Getter
 	private String lastname;
-	@Getter @Formula("concat(firstname, ' ', fulname)")
+	@Getter @Formula("concat(firstname, ' ', lastname)")
 	private String fullname;
 	
 	@OneToOne
@@ -67,4 +68,23 @@ public class Teacher {
 		this.lastname = lastname;
 		updateFullname();
 	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(firstname, lastname);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Teacher other = (Teacher) obj;
+		return Objects.equals(firstname, other.firstname) && Objects.equals(lastname, other.lastname);
+	}
+	
+	
 }

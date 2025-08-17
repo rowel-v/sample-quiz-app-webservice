@@ -1,6 +1,7 @@
 package com.example.quizApp.service.teacher.account;
 
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,29 +21,29 @@ import lombok.RequiredArgsConstructor;
 public class TeacherAccountService {
 
 	private final TeacherAccountRepo teacherAccountRepo;
-	private final AuthenticationManager authenticationManager;
+	private final AuthenticationProvider teacherAuthProvider;
 	private final JwtUtil jwtUtil;
 	private final PasswordEncoder passwordEncoder;
-	
+
 	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
-	public String loginRequest(TeacherAccountDto accountDto) {
-		
-		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+	public String loginAccount(TeacherAccountDto accountDto) {
+
+		Authentication auth = teacherAuthProvider.authenticate(new UsernamePasswordAuthenticationToken(
 				accountDto.getUsername(), accountDto.getPassword()));
-		
-		if (authentication.isAuthenticated()) return jwtUtil.generateToken(accountDto.getUsername());
-		
-		return null;
+
+		if (auth.isAuthenticated()) return jwtUtil.generateToken(auth.getName());
+
+		throw new BadCredentialsException("Invalid Credentials");
 	}
-	
+
 	public Result.Signup signupRequest(TeacherAccountDto accountDto) {
-		
+
 		return teacherAccountRepo.findByUsername(accountDto.getUsername())
 				.map(r -> Signup.USERNAME_ALREADY_TAKEN)
 				.orElseGet(() -> {
 					TeacherAccount teacherAccount = TeacherAccountMapper.INSTANCE.toEntity(accountDto);
 					teacherAccount.setPassword(passwordEncoder.encode(teacherAccount.getPassword()));
-				    teacherAccountRepo.save(teacherAccount);
+					teacherAccountRepo.save(teacherAccount);
 					return Signup.SIGNUP_SUCCESS;
 				});
 	}

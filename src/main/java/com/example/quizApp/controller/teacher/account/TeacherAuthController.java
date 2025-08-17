@@ -19,8 +19,8 @@ public class TeacherAuthController {
 	private final TeacherAccountService teacherAccountService;
 
 	@PostMapping("login")
-	ResponseEntity<?> login(@RequestBody @Valid TeacherAccountDto teacherAccountDto) {
-		String res = teacherAccountService.loginRequest(teacherAccountDto);
+	ResponseEntity<String> login(@RequestBody @Valid TeacherAccountDto teacherAccountDto) {
+		String res = teacherAccountService.loginAccount(teacherAccountDto);
 		return ResponseEntity.ok(res);
 	}
 }

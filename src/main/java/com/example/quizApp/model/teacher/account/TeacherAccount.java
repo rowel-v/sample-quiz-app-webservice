@@ -3,6 +3,7 @@ package com.example.quizApp.model.teacher.account;
 import com.example.quizApp.model.teacher.Teacher;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,7 +19,7 @@ import lombok.Setter;
 @Table(name = "teacher_account", schema = "teacher_schema")
 public class TeacherAccount {
 	
-	@Id
+	@Id @Setter
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
@@ -28,7 +29,7 @@ public class TeacherAccount {
 	private String password;
 	
 	@Getter @Setter
-	@OneToOne(mappedBy = "account")
+	@OneToOne(mappedBy = "account", fetch = FetchType.LAZY)
 	private Teacher teacher;
 	
 	@Builder
