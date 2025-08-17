@@ -68,7 +68,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
 		if (username != null) {
-
+			
 			if (requestURI.startsWith("/student")) {
 
 				StudentDetails studentDetails;
@@ -84,21 +84,21 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 				if (SecurityContextHolder.getContext().getAuthentication() == null) {
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
-			}
-		} else if (requestURI.startsWith("/teacher")) {
+			} else if (requestURI.startsWith("/teacher")) {
 
-			TeacherDetails teacherDetails;
-			try {
-				teacherDetails = (TeacherDetails) teacherAccountDetailsService.loadUserByUsername(username);
-			} catch (UsernameNotFoundException e) {
-				filterChain.doFilter(request, response);
-				return;
-			}
-			UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-					teacherDetails, null, teacherDetails.getAuthorities());
+				TeacherDetails teacherDetails;
+				try {
+					teacherDetails = (TeacherDetails) teacherAccountDetailsService.loadUserByUsername(username);
+				} catch (UsernameNotFoundException e) {
+					filterChain.doFilter(request, response);
+					return;
+				}
+				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+						teacherDetails, null, teacherDetails.getAuthorities());
 
-			if (SecurityContextHolder.getContext().getAuthentication() == null) {
-				SecurityContextHolder.getContext().setAuthentication(auth);
+				if (SecurityContextHolder.getContext().getAuthentication() == null) {
+					SecurityContextHolder.getContext().setAuthentication(auth);
+				}
 			}
 		}
 
