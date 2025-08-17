@@ -14,15 +14,17 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 @Table(name = "student_identity", schema = "student_schema")
 public class Student {
+	
+	Student() {}
 	
 	@GeneratedValue(strategy = GenerationType.IDENTITY) @Setter(AccessLevel.NONE) 
 	@Id private Long id;

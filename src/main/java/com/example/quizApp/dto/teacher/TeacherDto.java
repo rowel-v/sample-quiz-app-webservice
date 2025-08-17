@@ -1,5 +1,7 @@
 package com.example.quizApp.dto.teacher;
 
+import com.example.quizApp.dto.teacher.account.TeacherAccountDto;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -13,5 +15,7 @@ public class TeacherDto {
 	
 	@NotBlank @Size(max = 40)
 	private String lastname;
+	
+	private TeacherAccountDto account;
 
 }

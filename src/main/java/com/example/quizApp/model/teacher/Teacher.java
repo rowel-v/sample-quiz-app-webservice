@@ -10,6 +10,7 @@ import com.example.quizApp.model.teacher.account.TeacherAccount;
 import com.example.quizApp.model.teacher.sectionHandled.Section;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -18,15 +19,15 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "teacher_identity", schema = "teacher_schema")
 public class Teacher {
+	
+	Teacher() {}
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -39,7 +40,8 @@ public class Teacher {
 	@Getter @Formula("concat(firstname, ' ', lastname)")
 	private String fullname;
 	
-	@OneToOne
+	@Setter @Getter
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_id")
 	private TeacherAccount account;
 	
@@ -48,10 +50,11 @@ public class Teacher {
 	private final List<Section> sections = new LinkedList<>();
 
 	@Builder
-	private Teacher(String firstname, String lastname) {
+	private Teacher(String firstname, String lastname, TeacherAccount account) {
 		super();
 		this.firstname = firstname;
 		this.lastname = lastname;
+		this.account = account;
 		updateFullname();
 	}
 	
