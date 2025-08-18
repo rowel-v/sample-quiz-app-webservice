@@ -20,16 +20,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor
 public class TeacherService {
-	
+
 	private final TeacherRepo teacherRepo;
 	private final TeacherAccountRepo teacherAccountRepo;
-	
+
 	private Supplier<String> accountUsername = () -> {
 		var auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth != null) return auth.getName();
 		throw new UnauthorizedException();
 	};
-	
+
 	public Result.Save saveIdentity(TeacherDto teacherDto) {
 		return teacherAccountRepo.findByUsername(accountUsername.get()).map(acc -> {
 			if (acc.getTeacher() != null) return Save.ALREADY_SAVE;
@@ -42,7 +42,7 @@ public class TeacherService {
 			return Save.SAVE_SUCCESS;
 		}).orElseThrow(() -> new UsernameNotFoundException("Account not found"));	
 	}
-	
+
 	public void updateIdentity(TeacherDto teacherDto) {
 		teacherAccountRepo.findByUsername(accountUsername.get()).ifPresent(acc -> {
 			if (acc.getTeacher() == null) throw new TeacherNotFoundException();
@@ -55,11 +55,22 @@ public class TeacherService {
 			}
 		});
 	}
-	
+
 	public TeacherDto getIdentity() {
 		return teacherAccountRepo.findByUsername(accountUsername.get())
 				.map(acc -> TeacherMapper.INSTANCE.toDto(acc.getTeacher()))
 				.orElseThrow(() -> new TeacherNotFoundException());
+	}
+
+	public void deleteAccount() {
+		teacherAccountRepo.findByUsername(accountUsername.get()).ifPresent(acc -> {
+			Teacher teacher = acc.getTeacher();
+			if (teacher != null) {
+				teacherRepo.delete(teacher);
+				return;
+			}
+			throw new TeacherNotFoundException();
+		});
 	}
 
 }

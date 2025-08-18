@@ -1,4 +1,6 @@
-package com.example.quizApp.model.teacher.sectionHandled;
+package com.example.quizApp.model.teacher.sectionHandle;
+
+import java.util.Objects;
 
 import com.example.quizApp.model.teacher.Teacher;
 
@@ -37,11 +39,27 @@ public class Section {
 	private Teacher teacher;
 
 	@Builder
-	private Section(String name, String campus, int year, Teacher teacher) {
+	private Section(String name, String campus, int year) {
 		super();
 		this.name = name;
 		this.campus = campus;
 		this.year = year;
-		this.teacher = teacher;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Section other = (Section) obj;
+		return Objects.equals(name, other.name);
 	}
 }

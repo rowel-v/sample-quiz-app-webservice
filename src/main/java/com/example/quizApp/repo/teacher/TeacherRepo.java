@@ -7,5 +7,6 @@ import com.example.quizApp.model.teacher.Teacher;
 
 @Repository
 public interface TeacherRepo extends JpaRepository<Teacher, Long> {
+	void deleteByFirstname(String firstname);
 
 }

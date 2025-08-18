@@ -1,14 +1,16 @@
 package com.example.quizApp.model.teacher;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
 import org.hibernate.annotations.Formula;
 
 import com.example.quizApp.model.teacher.account.TeacherAccount;
-import com.example.quizApp.model.teacher.sectionHandled.Section;
+import com.example.quizApp.model.teacher.sectionHandle.Section;
+import com.example.quizApp.result.section.SectionResult;
+import com.example.quizApp.result.section.SectionResult.Add;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -41,13 +43,13 @@ public class Teacher {
 	private String fullname;
 	
 	@Setter @Getter
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
 	@JoinColumn(name = "account_id")
 	private TeacherAccount account;
 	
-	@Getter // TODO setter vague
-	@OneToMany(mappedBy = "teacher")
-	private final List<Section> sections = new LinkedList<>();
+	@Getter @Setter
+	@OneToMany(mappedBy = "teacher", cascade = CascadeType.PERSIST)
+	private List<Section> sections;
 
 	@Builder
 	private Teacher(String firstname, String lastname, TeacherAccount account) {
@@ -72,6 +74,16 @@ public class Teacher {
 		updateFullname();
 	}
 
+	public SectionResult.Add addSection(Section section) {
+		if (!sections.contains(section)) {
+			section.setTeacher(this);
+			sections.add(section);
+			return Add.SECTION_ADDED;
+		} else return Add.SECTION_ALREADY_ADDED;
+	}
+	
+	
+	
 	@Override
 	public int hashCode() {
 		return Objects.hash(firstname, lastname);
@@ -88,6 +100,7 @@ public class Teacher {
 		Teacher other = (Teacher) obj;
 		return Objects.equals(firstname, other.firstname) && Objects.equals(lastname, other.lastname);
 	}
+	
 	
 	
 }

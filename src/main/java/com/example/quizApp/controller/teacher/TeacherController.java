@@ -3,6 +3,7 @@ package com.example.quizApp.controller.teacher;
 import java.net.URI;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -41,5 +42,11 @@ public class TeacherController {
 	@GetMapping("data")
 	ResponseEntity<TeacherDto> get() {
 		return ResponseEntity.ok(teacherService.getIdentity());
+	}
+	
+	@DeleteMapping("account")
+	ResponseEntity<Void> delete() {
+		teacherService.deleteAccount();
+		return ResponseEntity.status(204).build();
 	}
 }
