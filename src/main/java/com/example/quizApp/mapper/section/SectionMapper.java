@@ -12,5 +12,7 @@ public interface SectionMapper {
 	public final static SectionMapper INSTANCE = Mappers.getMapper(SectionMapper.class);
 	
 	public Section toEntity(SectionDTO sectionDTO);
+	
+	public SectionDTO toDTO(Section section);
 
 }

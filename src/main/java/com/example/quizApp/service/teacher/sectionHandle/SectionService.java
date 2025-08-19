@@ -1,6 +1,8 @@
 package com.example.quizApp.service.teacher.sectionHandle;
 
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -12,13 +14,17 @@ import com.example.quizApp.mapper.section.SectionMapper;
 import com.example.quizApp.model.teacher.Teacher;
 import com.example.quizApp.repo.teacher.TeacherRepo;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
+import com.example.quizApp.repo.teacher.sectionHandle.SectionRepo;
 import com.example.quizApp.result.section.SectionResult;
+import com.example.quizApp.result.section.SectionResult.Delete;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor
 public class SectionService {
 
+	private final SectionRepo sectionRepo;
 	private final TeacherAccountRepo teacherAccountRepo;
 	private final TeacherRepo teacherRepo;
 
@@ -30,24 +36,47 @@ public class SectionService {
 	};
 
 	public SectionResult.Add addSection(SectionDTO sectionDTO) {
-		return teacherAccountRepo.findByUsername(accountUsername.get()).map(acc -> {
-			Teacher teacher = acc.getTeacher();
+		return teacherAccountRepo.findByUsername(accountUsername.get())
+				.map(acc -> {
+					Teacher teacher = acc.getTeacher();
 
-			if (teacher != null) {
-				SectionResult.Add res = teacher.addSection(SectionMapper.INSTANCE.toEntity(sectionDTO));
-				return switch (res) {
-				case SECTION_ALREADY_ADDED -> res;
-				case SECTION_ADDED -> {
-					teacherRepo.save(teacher);
-					yield res;
-				}
-				};
-			}
-			throw new TeacherNotFoundException();
-		}).orElseThrow(() -> new UnauthorizedException());
+					if (teacher != null) {
+						SectionResult.Add res = teacher.addSection(SectionMapper.INSTANCE.toEntity(sectionDTO));
+						return switch (res) {
+						case SECTION_ALREADY_ADDED -> res;
+						case SECTION_ADDED -> {
+							teacherRepo.save(teacher);
+							yield res;
+						}
+						};
+					}
+					throw new TeacherNotFoundException();
+				}).orElseThrow(() -> new UnauthorizedException());
 	}
 
 
+	public Set<SectionDTO> getSectionsHandled() {
+		return teacherAccountRepo.findByUsername(accountUsername.get())
+				.map(acc -> {
+					if (acc.getTeacher() != null) {
+						return acc.getTeacher().getSections().stream()
+								.map(SectionMapper.INSTANCE::toDTO)
+								.collect(Collectors.toSet());
+					}
+					throw new TeacherNotFoundException();
+				})
+				.orElseThrow(() -> new UnauthorizedException());
+	}
+
+	@Transactional
+	public SectionResult.Delete deleteSection(String sectionName) {
+		return sectionRepo.findByName(sectionName)
+				.map(section -> {
+					sectionRepo.delete(section);
+					return Delete.SUCCESS;
+				})
+				.orElse(Delete.SECTION_NOT_FOUND);
+	}
 
 
 }

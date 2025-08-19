@@ -49,7 +49,7 @@ public class Teacher {
 	private TeacherAccount account;
 	
 	@Getter @Setter
-	@OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE)
+	@OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
 	private Set<Section> sections = new HashSet<>();
 
 	@Builder

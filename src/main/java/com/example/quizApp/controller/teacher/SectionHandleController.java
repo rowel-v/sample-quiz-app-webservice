@@ -1,8 +1,12 @@
 package com.example.quizApp.controller.teacher;
 
 import java.net.URI;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +31,20 @@ public class SectionHandleController {
 		return switch (res) {
 		case SECTION_ALREADY_ADDED -> ResponseEntity.status(409).build();
 		case SECTION_ADDED -> ResponseEntity.created(URI.create("teacher/section")).build();
+		};
+	}
+	
+	@GetMapping
+	ResponseEntity<Set<SectionDTO>> getSections() {
+		return ResponseEntity.ok(sectionService.getSectionsHandled());
+	}
+	
+	@DeleteMapping("{sectionName}")
+	ResponseEntity<Void> deleteSections(@PathVariable String sectionName) {
+		SectionResult.Delete res = sectionService.deleteSection(sectionName);
+		return switch (res) {
+		case SECTION_NOT_FOUND -> ResponseEntity.status(404).build();
+		case SUCCESS -> ResponseEntity.status(204).build();
 		};
 	}
 }

@@ -12,7 +12,8 @@ public class SectionResult {
 	}
 	
 	public enum Delete {
-		
+		SUCCESS,
+		SECTION_NOT_FOUND
 	}
 
 }
