@@ -1,5 +1,6 @@
 package com.example.quizApp.model.teacher;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -48,8 +49,8 @@ public class Teacher {
 	private TeacherAccount account;
 	
 	@Getter @Setter
-	@OneToMany(mappedBy = "teacher", cascade = CascadeType.PERSIST)
-	private List<Section> sections;
+	@OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE)
+	private List<Section> sections = new ArrayList<>();
 
 	@Builder
 	private Teacher(String firstname, String lastname, TeacherAccount account) {
