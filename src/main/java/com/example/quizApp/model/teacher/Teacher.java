@@ -1,8 +1,8 @@
 package com.example.quizApp.model.teacher;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import org.hibernate.annotations.Formula;
 
@@ -50,7 +50,7 @@ public class Teacher {
 	
 	@Getter @Setter
 	@OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE)
-	private List<Section> sections = new ArrayList<>();
+	private Set<Section> sections = new HashSet<>();
 
 	@Builder
 	private Teacher(String firstname, String lastname, TeacherAccount account) {
