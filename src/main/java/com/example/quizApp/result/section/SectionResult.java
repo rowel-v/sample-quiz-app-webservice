@@ -8,7 +8,8 @@ public class SectionResult {
 	}
 	
 	public enum Update {
-		
+		SUCCESS,
+		SECTION_NOT_FOUND
 	}
 	
 	public enum Delete {

@@ -47,7 +47,7 @@ public class Teacher {
 	private TeacherAccount account;
 	
 	@Getter @Setter
-	@OneToMany(mappedBy = "teacher", cascade = CascadeType.MERGE, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "teacher", cascade = {CascadeType.MERGE, CascadeType.REMOVE}, fetch = FetchType.LAZY)
 	private Set<Section> sections = new HashSet<>();
 
 	@Builder

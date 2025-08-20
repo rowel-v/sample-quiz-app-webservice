@@ -44,7 +44,7 @@ public class SectionService {
 						Section section = SectionMapper.INSTANCE.toEntity(sectionDTO);
 						var sectionAlreadyExists = sectionRepo.findAll().contains(section);
 						if (sectionAlreadyExists) return Add.SECTION_ALREADY_ADDED;
-						
+
 						section.setTeacher(teacher);
 						teacher.getSections().add(section);
 						teacherRepo.save(teacher);
@@ -75,6 +75,26 @@ public class SectionService {
 					return Delete.SUCCESS;
 				})
 				.orElse(Delete.SECTION_NOT_FOUND);
+	}
+
+	public SectionResult.Update updateSection(String sectionNameToUpdate, SectionDTO sectionDTO) {
+		return teacherAccountRepo.findByUsername(accountUsername.get())
+				.map(acc -> {
+					Teacher teacher = acc.getTeacher();
+					if (teacher != null) {
+						return sectionRepo.findByName(sectionNameToUpdate)
+								.map(sectionToUpdate -> {
+									sectionRepo.delete(sectionToUpdate);
+									Section sectionToReplace = SectionMapper.INSTANCE.toEntity(sectionDTO);
+									sectionToReplace.setTeacher(teacher);
+									sectionRepo.save(sectionToReplace);
+									return SectionResult.Update.SUCCESS;
+								})
+								.orElse(SectionResult.Update.SECTION_NOT_FOUND);
+					}
+					throw new TeacherNotFoundException();
+				})
+				.orElseThrow(() -> new UnauthorizedException());
 	}
 
 
