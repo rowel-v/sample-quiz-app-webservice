@@ -3,7 +3,7 @@ package com.example.quizApp.result.section;
 public class SectionResult {
 	
 	public enum Add {
-		SECTION_ADDED,
+		SUCCESS,
 		SECTION_ALREADY_ADDED
 	}
 	

@@ -30,7 +30,7 @@ public class SectionHandleController {
 		SectionResult.Add res = sectionService.addSection(sectionDTO);
 		return switch (res) {
 		case SECTION_ALREADY_ADDED -> ResponseEntity.status(409).build();
-		case SECTION_ADDED -> ResponseEntity.created(URI.create("teacher/section")).build();
+		case SUCCESS -> ResponseEntity.created(URI.create("teacher/section")).build();
 		};
 	}
 	

@@ -8,8 +8,6 @@ import org.hibernate.annotations.Formula;
 
 import com.example.quizApp.model.teacher.account.TeacherAccount;
 import com.example.quizApp.model.teacher.sectionHandle.Section;
-import com.example.quizApp.result.section.SectionResult;
-import com.example.quizApp.result.section.SectionResult.Add;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
@@ -74,16 +72,6 @@ public class Teacher {
 		this.lastname = lastname;
 		updateFullname();
 	}
-
-	public SectionResult.Add addSection(Section section) {
-		if (!sections.contains(section)) {
-			section.setTeacher(this);
-			sections.add(section);
-			return Add.SECTION_ADDED;
-		} else return Add.SECTION_ALREADY_ADDED;
-	}
-	
-	
 	
 	@Override
 	public int hashCode() {

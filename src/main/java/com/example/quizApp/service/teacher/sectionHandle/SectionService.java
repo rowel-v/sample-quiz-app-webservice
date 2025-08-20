@@ -12,10 +12,12 @@ import com.example.quizApp.exception.TeacherNotFoundException;
 import com.example.quizApp.exception.UnauthorizedException;
 import com.example.quizApp.mapper.section.SectionMapper;
 import com.example.quizApp.model.teacher.Teacher;
+import com.example.quizApp.model.teacher.sectionHandle.Section;
 import com.example.quizApp.repo.teacher.TeacherRepo;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
 import com.example.quizApp.repo.teacher.sectionHandle.SectionRepo;
 import com.example.quizApp.result.section.SectionResult;
+import com.example.quizApp.result.section.SectionResult.Add;
 import com.example.quizApp.result.section.SectionResult.Delete;
 
 import lombok.RequiredArgsConstructor;
@@ -38,16 +40,15 @@ public class SectionService {
 		return teacherAccountRepo.findByUsername(accountUsername.get())
 				.map(acc -> {
 					Teacher teacher = acc.getTeacher();
-
 					if (teacher != null) {
-						SectionResult.Add res = teacher.addSection(SectionMapper.INSTANCE.toEntity(sectionDTO));
-						return switch (res) {
-						case SECTION_ALREADY_ADDED -> res;
-						case SECTION_ADDED -> {
-							teacherRepo.save(teacher);
-							yield res;
-						}
-						};
+						Section section = SectionMapper.INSTANCE.toEntity(sectionDTO);
+						var sectionAlreadyExists = sectionRepo.findAll().contains(section);
+						if (sectionAlreadyExists) return Add.SECTION_ALREADY_ADDED;
+						
+						section.setTeacher(teacher);
+						teacher.getSections().add(section);
+						teacherRepo.save(teacher);
+						return SectionResult.Add.SUCCESS;
 					}
 					throw new TeacherNotFoundException();
 				}).orElseThrow(() -> new UnauthorizedException());
