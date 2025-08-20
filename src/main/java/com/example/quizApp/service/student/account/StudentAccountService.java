@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 public class StudentAccountService {
 	
 	private final StudentAccountRepo studentAccountRepo;
-	private final PasswordEncoder pEncoder;
+	private final PasswordEncoder studentPasswordEncoder;
 	private final JwtUtil jwtUtil;
 	
 	private final AuthenticationProvider studentAuthProvider;
@@ -33,7 +33,7 @@ public class StudentAccountService {
 		return studentAccountRepo.findByUsername(account.getUsername())
 				.map(a -> Result.Signup.USERNAME_ALREADY_TAKEN)
 				.orElseGet(() -> {
-					account.setPassword(pEncoder.encode(account.getPassword()));
+					account.setPassword(studentPasswordEncoder.encode(account.getPassword()));
 					studentAccountRepo.save(account);
 					return Result.Signup.SIGNUP_SUCCESS;
 				});

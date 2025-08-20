@@ -7,6 +7,7 @@ import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -29,7 +30,7 @@ public class SecurityConfig {
 		
 		return httpSecurity
 				.csrf(c -> c.disable())
-				.authorizeHttpRequests(req -> req
+				.authorizeHttpRequests(auth -> auth
 						.requestMatchers(HttpMethod.GET, "/student")
 						.permitAll()
 						.requestMatchers(HttpMethod.POST, "/student/login", "/student/signup")
@@ -49,19 +50,24 @@ public class SecurityConfig {
 	@Bean
 	AuthenticationProvider studentAuthProvider() {
 		DaoAuthenticationProvider dProvider = new DaoAuthenticationProvider(studentAccountDetailsService);
-		dProvider.setPasswordEncoder(passwordEncoder());
+		dProvider.setPasswordEncoder(studentPasswordEncoder());
 		return dProvider;
 	}
 	
 	@Bean
 	AuthenticationProvider teacherAuthProvider() {
 		DaoAuthenticationProvider dProvider = new DaoAuthenticationProvider(teacherAccountDetailsService);
-		dProvider.setPasswordEncoder(passwordEncoder());
+		dProvider.setPasswordEncoder(teacherPasswordEncoder());
 		return dProvider;
 	}
 	
 	@Bean
-	PasswordEncoder passwordEncoder() {
+	PasswordEncoder studentPasswordEncoder() {
 		return new BCryptPasswordEncoder();
+	}
+	
+	@Bean
+	PasswordEncoder teacherPasswordEncoder() {
+		return Argon2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 	}
 }

@@ -23,7 +23,7 @@ public class TeacherAccountService {
 	private final TeacherAccountRepo teacherAccountRepo;
 	private final AuthenticationProvider teacherAuthProvider;
 	private final JwtUtil jwtUtil;
-	private final PasswordEncoder passwordEncoder;
+	private final PasswordEncoder teacherPasswordEncoder;
 
 	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
 	public String loginAccount(TeacherAccountDto accountDto) {
@@ -42,7 +42,7 @@ public class TeacherAccountService {
 				.map(r -> Signup.USERNAME_ALREADY_TAKEN)
 				.orElseGet(() -> {
 					TeacherAccount teacherAccount = TeacherAccountMapper.INSTANCE.toEntity(accountDto);
-					teacherAccount.setPassword(passwordEncoder.encode(teacherAccount.getPassword()));
+					teacherAccount.setPassword(teacherPasswordEncoder.encode(teacherAccount.getPassword()));
 					teacherAccountRepo.save(teacherAccount);
 					return Signup.SIGNUP_SUCCESS;
 				});

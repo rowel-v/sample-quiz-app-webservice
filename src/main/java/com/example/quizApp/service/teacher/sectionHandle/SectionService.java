@@ -18,7 +18,6 @@ import com.example.quizApp.repo.teacher.sectionHandle.SectionRepo;
 import com.example.quizApp.result.section.SectionResult;
 import com.example.quizApp.result.section.SectionResult.Delete;
 
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
 @Service @RequiredArgsConstructor
@@ -68,7 +67,6 @@ public class SectionService {
 				.orElseThrow(() -> new UnauthorizedException());
 	}
 
-	@Transactional
 	public SectionResult.Delete deleteSection(String sectionName) {
 		return sectionRepo.findByName(sectionName)
 				.map(section -> {
