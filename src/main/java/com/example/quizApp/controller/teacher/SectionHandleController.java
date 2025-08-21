@@ -50,7 +50,7 @@ public class SectionHandleController {
 	}
 	
 	@DeleteMapping("{sectionName}")
-	ResponseEntity<Void> deleteSections(@PathVariable String sectionName) {
+	ResponseEntity<Void> deleteSection(@PathVariable String sectionName) {
 		SectionResult.Delete res = sectionService.deleteSection(sectionName);
 		return switch (res) {
 		case SECTION_NOT_FOUND -> ResponseEntity.status(404).build();

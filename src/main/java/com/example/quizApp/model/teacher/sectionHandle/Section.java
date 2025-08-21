@@ -1,5 +1,6 @@
 package com.example.quizApp.model.teacher.sectionHandle;
 
+import java.security.SecureRandom;
 import java.util.Objects;
 
 import com.example.quizApp.model.teacher.Teacher;
@@ -19,20 +20,23 @@ import lombok.Setter;
 @Entity
 @Table(name = "section_handle", schema = "teacher_schema")
 public class Section {
-	
+
 	Section() {}
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Getter @Setter
 	private String name;
 	@Getter @Setter
 	private String campus;
 	@Getter @Setter
 	private int year;
-	
+
+	@Getter @Setter
+	private String sectionCode;
+
 	@Getter @Setter
 	@ManyToOne
 	@JoinColumn(name = "teacher_owner")
@@ -61,5 +65,22 @@ public class Section {
 			return false;
 		Section other = (Section) obj;
 		return Objects.equals(name, other.name);
+	}
+
+	public void generateSectionCode() {
+		sectionCode = generateRandomCode();
+	}
+
+	private String generateRandomCode() {
+		final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		final int CODE_LENGTH = 6;
+
+		SecureRandom random = new SecureRandom();
+		StringBuilder code = new StringBuilder();
+
+		for (int i = 0; i < CODE_LENGTH; i++) {
+			code.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
+		}
+		return code.toString();
 	}
 }

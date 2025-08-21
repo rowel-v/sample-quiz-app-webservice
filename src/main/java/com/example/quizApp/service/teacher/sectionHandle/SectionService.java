@@ -46,6 +46,13 @@ public class SectionService {
 						if (sectionAlreadyExists) return Add.SECTION_ALREADY_ADDED;
 
 						section.setTeacher(teacher);
+						section.generateSectionCode();
+						
+						var sectionCodeAlreadyExists = sectionRepo.existsBySectionCode(section.getSectionCode());
+						while (sectionCodeAlreadyExists) {
+							section.generateSectionCode();
+						}
+						
 						teacher.getSections().add(section);
 						teacherRepo.save(teacher);
 						return SectionResult.Add.SUCCESS;
@@ -87,6 +94,14 @@ public class SectionService {
 									sectionRepo.delete(sectionToUpdate);
 									Section sectionToReplace = SectionMapper.INSTANCE.toEntity(sectionDTO);
 									sectionToReplace.setTeacher(teacher);
+									
+									sectionToReplace.generateSectionCode();
+									
+									var sectionCodeAlreadyExists = sectionRepo.existsBySectionCode(sectionToReplace.getSectionCode());
+									while (sectionCodeAlreadyExists) {
+										sectionToReplace.generateSectionCode();
+									}
+									
 									sectionRepo.save(sectionToReplace);
 									return SectionResult.Update.SUCCESS;
 								})
