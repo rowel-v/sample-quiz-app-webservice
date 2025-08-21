@@ -14,6 +14,7 @@ public interface TeacherMapper {
 	public Teacher toEntity(TeacherDto teacherDto);
 	
 	@Mapping(target = "account.password", constant = "PROTECTED")
+	@Mapping(target = "handledSection", source = "sections")
 	public TeacherDto toDto(Teacher teacher);
 
 }

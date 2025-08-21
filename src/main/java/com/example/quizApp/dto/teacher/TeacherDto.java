@@ -1,5 +1,8 @@
 package com.example.quizApp.dto.teacher;
 
+import java.util.Set;
+
+import com.example.quizApp.dto.section.SectionDTO;
 import com.example.quizApp.dto.teacher.account.TeacherAccountDto;
 
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +18,8 @@ public class TeacherDto {
 	
 	@NotBlank @Size(max = 40)
 	private String lastname;
+	
+	private Set<SectionDTO> handledSection;
 	
 	private TeacherAccountDto account;
 
