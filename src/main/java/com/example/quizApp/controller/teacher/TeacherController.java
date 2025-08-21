@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.teacher.TeacherDto;
-import com.example.quizApp.result.Result.Save;
+import com.example.quizApp.result.shared.Result.Save;
 import com.example.quizApp.service.teacher.TeacherService;
 
 import jakarta.validation.Valid;

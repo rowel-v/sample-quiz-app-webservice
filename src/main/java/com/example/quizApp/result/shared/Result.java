@@ -1,4 +1,4 @@
-package com.example.quizApp.result;
+package com.example.quizApp.result.shared;
 
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

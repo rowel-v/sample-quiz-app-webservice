@@ -13,8 +13,8 @@ import com.example.quizApp.mapper.teacher.TeacherMapper;
 import com.example.quizApp.model.teacher.Teacher;
 import com.example.quizApp.repo.teacher.TeacherRepo;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
-import com.example.quizApp.result.Result;
-import com.example.quizApp.result.Result.Save;
+import com.example.quizApp.result.shared.Result;
+import com.example.quizApp.result.shared.Result.Save;
 
 import lombok.RequiredArgsConstructor;
 

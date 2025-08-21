@@ -14,8 +14,10 @@ import com.example.quizApp.mapper.student.StudentMapper;
 import com.example.quizApp.model.student.Student;
 import com.example.quizApp.repo.student.StudentRepo;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
-import com.example.quizApp.result.Result;
-import com.example.quizApp.result.Result.Save;
+import com.example.quizApp.repo.teacher.sectionHandle.SectionRepo;
+import com.example.quizApp.result.shared.Result;
+import com.example.quizApp.result.shared.Result.Save;
+import com.example.quizApp.result.student.SaveSection;
 import com.example.quizApp.security.service.student.StudentDetails;
 
 import jakarta.transaction.Transactional;
@@ -77,7 +79,26 @@ public class StudentService {
 	public List<StudentDto> getAllIdentity() {	
 		return studentRepo.findAll().stream().map(StudentMapper.INSTANCE::toDto).collect(Collectors.toList());
 	}
-
-
-
+	
+	private final SectionRepo sectionRepo;
+	
+	public SaveSection saveSection(String sectionName, String sectionCode) {
+		return studentAccountRepo.findByUsername(studentUsername.get())
+		.map(acc -> {
+			Student student = acc.getStudent();
+			if (student == null) throw new StudentNotFoundException();
+			
+			return sectionRepo.findByName(sectionName)
+			.map(section -> {
+				var validCode = section.getSectionCode().equals(sectionCode);
+				if (!validCode) return SaveSection.INVALID_SECTION_CODE;
+				
+				student.setSection(section.getName());
+				studentRepo.save(student);
+				return SaveSection.SUCCESS;
+			})
+			.orElse(SaveSection.SECTION_NOT_FOUND);
+		})
+		.orElseThrow(() -> new UnauthorizedException());
+	}
 }

@@ -16,9 +16,9 @@ import com.example.quizApp.model.teacher.sectionHandle.Section;
 import com.example.quizApp.repo.teacher.TeacherRepo;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
 import com.example.quizApp.repo.teacher.sectionHandle.SectionRepo;
-import com.example.quizApp.result.section.SectionResult;
-import com.example.quizApp.result.section.SectionResult.Add;
-import com.example.quizApp.result.section.SectionResult.Delete;
+import com.example.quizApp.result.teacher.section.SectionResult;
+import com.example.quizApp.result.teacher.section.SectionResult.Add;
+import com.example.quizApp.result.teacher.section.SectionResult.Delete;
 
 import lombok.RequiredArgsConstructor;
 

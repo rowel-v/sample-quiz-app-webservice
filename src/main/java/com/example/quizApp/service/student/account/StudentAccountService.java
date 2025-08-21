@@ -11,7 +11,7 @@ import com.example.quizApp.dto.student.account.StudentAccountDto;
 import com.example.quizApp.mapper.student.account.StudentAccountMapper;
 import com.example.quizApp.model.student.account.StudentAccount;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
-import com.example.quizApp.result.Result;
+import com.example.quizApp.result.shared.Result;
 import com.example.quizApp.security.JwtUtil;
 
 import lombok.RequiredArgsConstructor;

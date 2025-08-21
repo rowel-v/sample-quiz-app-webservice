@@ -38,6 +38,9 @@ public class Student {
 	private String fullname;
 	
 	@Getter @Setter
+	private String section;
+	
+	@Getter @Setter
 	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "account_id")
 	private StudentAccount account;

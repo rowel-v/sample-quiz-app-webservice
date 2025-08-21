@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.quizApp.dto.section.SectionDTO;
-import com.example.quizApp.result.section.SectionResult;
+import com.example.quizApp.result.teacher.section.SectionResult;
 import com.example.quizApp.service.teacher.sectionHandle.SectionService;
 
 import jakarta.validation.Valid;

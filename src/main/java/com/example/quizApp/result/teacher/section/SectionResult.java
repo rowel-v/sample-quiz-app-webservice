@@ -1,4 +1,4 @@
-package com.example.quizApp.result.section;
+package com.example.quizApp.result.teacher.section;
 
 public class SectionResult {
 	
