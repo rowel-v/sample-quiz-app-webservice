@@ -60,6 +60,7 @@ public class StudentService {
 		studentAccountRepo.findByUsername(studentUsername.get()).ifPresent(acc -> {
 			Student request = StudentMapper.INSTANCE.toEntity(studentDto);
 			// check the request data if not equal in a persisted entity (i.e., firstname, lastname & fullname)
+			if (acc.getStudent() == null) throw new StudentNotFoundException();
 			if (!acc.getStudent().equals(request)) {
 				acc.getStudent().setFirstname(studentDto.getFirstname());
 				acc.getStudent().setLastname(studentDto.getLastname());
