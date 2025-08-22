@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.student.StudentDto;
+import com.example.quizApp.dto.student.GetDataResponse;
+import com.example.quizApp.dto.student.SaveIdentityRequest;
+import com.example.quizApp.dto.student.UpdateIdentityRequest;
 import com.example.quizApp.exception.StudentNotFoundException;
 import com.example.quizApp.exception.UnauthorizedException;
 import com.example.quizApp.mapper.student.StudentMapper;
@@ -31,16 +33,16 @@ public class StudentService {
 
 	private Supplier<String> studentUsername = () -> SecurityContextHolder.getContext().getAuthentication().getName();
 	private Supplier<StudentDetails> studentDetails = () -> {
-		
+
 		var auth = SecurityContextHolder.getContext().getAuthentication();
 		if (auth == null) throw new UnauthorizedException();
-		
+
 		return (StudentDetails) auth.getPrincipal();
 	};
 
 	// student can be save one time only, it can be update in Result.Update
-	public Result.Save saveIdentity(StudentDto studentDto) {
-		Student student = StudentMapper.INSTANCE.toEntity(studentDto);
+	public Result.Save saveIdentity(SaveIdentityRequest saveIdentityRequest) {
+		Student student = StudentMapper.INSTANCE.toEntity(saveIdentityRequest);
 
 		var username = this.studentUsername.get();
 		var account = studentAccountRepo.findByUsername(username).get();
@@ -52,53 +54,56 @@ public class StudentService {
 		return Save.SAVE_SUCCESS;
 	}
 
-	public StudentDto getIdentity() {
+	public GetDataResponse getIdentity() {
 		return studentAccountRepo.findByUsername(studentUsername.get())
-				.map(acc -> StudentMapper.INSTANCE.toDto(acc.getStudent()))
+				.map(acc -> StudentMapper.INSTANCE.toGetDataResponse(acc.getStudent()))
 				.orElseThrow(() -> new StudentNotFoundException());	
 	}
 
-	public void updateIdentity(StudentDto studentDto) {
+	public void updateIdentity(UpdateIdentityRequest request) {
 		studentAccountRepo.findByUsername(studentUsername.get()).ifPresent(acc -> {
-			Student request = StudentMapper.INSTANCE.toEntity(studentDto);
+			Student student = StudentMapper.INSTANCE.toEntity(request);
 			// check the request data if not equal in a persisted entity (i.e., firstname, lastname & fullname)
 			if (acc.getStudent() == null) throw new StudentNotFoundException();
-			if (!acc.getStudent().equals(request)) {
-				acc.getStudent().setFirstname(studentDto.getFirstname());
-				acc.getStudent().setLastname(studentDto.getLastname());
+			if (!acc.getStudent().equals(student)) {
+				acc.getStudent().setFirstname(request.getFirstname());
+				acc.getStudent().setLastname(request.getLastname());
 				studentAccountRepo.save(acc);
 			}
 		});
 	}
-	
+
 	@Transactional
 	public void deleteAccount() {	
 		studentAccountRepo.deleteById(studentDetails.get().getAccountId());
 	}
-	
-	public List<StudentDto> getAllIdentity() {	
-		return studentRepo.findAll().stream().map(StudentMapper.INSTANCE::toDto).collect(Collectors.toList());
+
+	public List<GetDataResponse> getAllIdentity() {	
+		return studentRepo.findAll()
+				.stream()
+				.map(StudentMapper.INSTANCE::toGetDataResponse)
+				.collect(Collectors.toList());
 	}
-	
+
 	private final SectionRepo sectionRepo;
-	
+
 	public SaveSection saveSection(String sectionName, String sectionCode) {
 		return studentAccountRepo.findByUsername(studentUsername.get())
-		.map(acc -> {
-			Student student = acc.getStudent();
-			if (student == null) throw new StudentNotFoundException();
-			
-			return sectionRepo.findByName(sectionName)
-			.map(section -> {
-				var validCode = section.getSectionCode().equals(sectionCode);
-				if (!validCode) return SaveSection.INVALID_SECTION_CODE;
-				
-				student.setSection(section.getName());
-				studentRepo.save(student);
-				return SaveSection.SUCCESS;
-			})
-			.orElse(SaveSection.SECTION_NOT_FOUND);
-		})
-		.orElseThrow(() -> new UnauthorizedException());
+				.map(acc -> {
+					Student student = acc.getStudent();
+					if (student == null) throw new StudentNotFoundException();
+
+					return sectionRepo.findByName(sectionName)
+							.map(section -> {
+								var validCode = section.getSectionCode().equals(sectionCode);
+								if (!validCode) return SaveSection.INVALID_SECTION_CODE;
+
+								student.setSection(section.getName());
+								studentRepo.save(student);
+								return SaveSection.SUCCESS;
+							})
+							.orElse(SaveSection.SECTION_NOT_FOUND);
+				})
+				.orElseThrow(() -> new UnauthorizedException());
 	}
 }

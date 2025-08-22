@@ -3,13 +3,10 @@ package com.example.quizApp.dto.student.account;
 import org.hibernate.validator.constraints.Length;
 
 import jakarta.validation.constraints.NotBlank;
-
-import lombok.Builder;
 import lombok.Value;
 
 @Value
-@Builder
-public class StudentAccountDto {
+public class LoginRequest {
 	
 	@NotBlank 
 	@Length(min = 5, max = 40)

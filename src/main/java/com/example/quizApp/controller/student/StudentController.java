@@ -14,11 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.student.StudentDto;
+import com.example.quizApp.dto.student.GetDataResponse;
+import com.example.quizApp.dto.student.SaveIdentityRequest;
+import com.example.quizApp.dto.student.UpdateIdentityRequest;
 import com.example.quizApp.result.shared.Result.Save;
 import com.example.quizApp.result.student.SaveSection;
 import com.example.quizApp.service.student.StudentService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RequestMapping("student")
@@ -28,10 +31,8 @@ public class StudentController {
 	private final StudentService studentService;
 	
 	@PostMapping("save")
-	ResponseEntity<String> saveStudent(@RequestBody StudentDto studentDto) {
-		
-		Save result = studentService.saveIdentity(studentDto);
-		
+	ResponseEntity<String> saveStudent(@RequestBody @Valid SaveIdentityRequest saveIdentityRequest) {
+		Save result = studentService.saveIdentity(saveIdentityRequest);
 		return switch (result) {
 		case SAVE_SUCCESS -> ResponseEntity.created(URI.create("student/data")).build();
 		case ALREADY_SAVE -> ResponseEntity.status(409).body("Already Save");
@@ -39,13 +40,13 @@ public class StudentController {
 	}
 	
 	@GetMapping("data")
-	ResponseEntity<StudentDto> getStudent() {
+	ResponseEntity<GetDataResponse> getStudent() {
 		return ResponseEntity.ok(studentService.getIdentity());
 	}
 	
 	@PutMapping("update")
-	ResponseEntity<Void> updateStudent(@RequestBody StudentDto studentDto) {
-		studentService.updateIdentity(studentDto);
+	ResponseEntity<Void> updateStudent(@RequestBody @Valid UpdateIdentityRequest updateIdentityRequest) {
+		studentService.updateIdentity(updateIdentityRequest);
 		return ResponseEntity.noContent().build();
 	}
 	
@@ -56,7 +57,7 @@ public class StudentController {
 	}
 	
 	@GetMapping
-	ResponseEntity<List<StudentDto>> getAllStudent() {
+	ResponseEntity<List<GetDataResponse>> getAllStudent() {
 		return ResponseEntity.ok(studentService.getAllIdentity());
 	}
 	
@@ -64,7 +65,7 @@ public class StudentController {
 	ResponseEntity<Void> saveSection(@PathVariable String sectionName, @RequestParam String code) {
 		SaveSection res = studentService.saveSection(sectionName, code);
 		return switch (res) {
-		case INVALID_SECTION_CODE -> ResponseEntity.status(400).build();
+		case INVALID_SECTION_CODE -> ResponseEntity.status(404).build();
 		case SECTION_NOT_FOUND -> ResponseEntity.status(404).build();
 		case SUCCESS -> ResponseEntity.status(204).build();
  		};

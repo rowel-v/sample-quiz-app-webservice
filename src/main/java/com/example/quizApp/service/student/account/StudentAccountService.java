@@ -7,7 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.student.account.StudentAccountDto;
+import com.example.quizApp.dto.student.account.LoginRequest;
+import com.example.quizApp.dto.student.account.SignupRequest;
 import com.example.quizApp.mapper.student.account.StudentAccountMapper;
 import com.example.quizApp.model.student.account.StudentAccount;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
@@ -19,17 +20,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @Service
 public class StudentAccountService {
-	
+
 	private final StudentAccountRepo studentAccountRepo;
 	private final PasswordEncoder studentPasswordEncoder;
 	private final JwtUtil jwtUtil;
-	
+
 	private final AuthenticationProvider studentAuthProvider;
-	
-	public Result.Signup createAccount(StudentAccountDto accountDto) {
-		
-		StudentAccount account = StudentAccountMapper.INSTANCE.toEntity(accountDto);
-		
+
+	public Result.Signup createAccount(SignupRequest req) {
+		StudentAccount account = StudentAccountMapper.INSTANCE.toEntity(req);
 		return studentAccountRepo.findByUsername(account.getUsername())
 				.map(a -> Result.Signup.USERNAME_ALREADY_TAKEN)
 				.orElseGet(() -> {
@@ -38,15 +37,14 @@ public class StudentAccountService {
 					return Result.Signup.SIGNUP_SUCCESS;
 				});
 	}
-	
+
 	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
-	public String loginAccount(StudentAccountDto accountDto) {
-		
+	public String loginAccount(LoginRequest req) {
 		Authentication auth = studentAuthProvider.authenticate(new UsernamePasswordAuthenticationToken(
-				accountDto.getUsername(), accountDto.getPassword()));
-		
+				req.getUsername(), req.getPassword()));
+
 		if (auth.isAuthenticated()) return jwtUtil.generateToken(auth.getName());
-		
+
 		throw new BadCredentialsException("Invalid Credentials");
 	}
 }

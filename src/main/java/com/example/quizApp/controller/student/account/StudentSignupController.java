@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.student.account.StudentAccountDto;
+import com.example.quizApp.dto.student.account.SignupRequest;
 import com.example.quizApp.result.shared.Result.Signup;
 import com.example.quizApp.service.student.account.StudentAccountService;
 
@@ -23,9 +23,9 @@ public class StudentSignupController {
 	private final StudentAccountService service;
 	
 	@PostMapping("signup")
-	ResponseEntity<?> signupReq(@RequestBody @Valid StudentAccountDto sDto) {
+	ResponseEntity<?> signupReq(@RequestBody @Valid SignupRequest req) {
 		
-		Signup result = service.createAccount(sDto); 
+		Signup result = service.createAccount(req); 
 		return switch (result) {
 		case SIGNUP_SUCCESS -> ResponseEntity.created(URI.create("login")).build();
 		case USERNAME_ALREADY_TAKEN -> ResponseEntity.status(HttpStatus.CONFLICT).build();
