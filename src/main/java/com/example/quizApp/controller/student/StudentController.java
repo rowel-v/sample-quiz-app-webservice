@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.student.GetDataResponse;
+import com.example.quizApp.dto.student.DataResponse;
 import com.example.quizApp.dto.student.SaveIdentityRequest;
 import com.example.quizApp.dto.student.UpdateIdentityRequest;
 import com.example.quizApp.result.shared.Result.Save;
@@ -40,7 +40,7 @@ public class StudentController {
 	}
 	
 	@GetMapping("data")
-	ResponseEntity<GetDataResponse> getStudent() {
+	ResponseEntity<DataResponse> getStudent() {
 		return ResponseEntity.ok(studentService.getIdentity());
 	}
 	
@@ -57,7 +57,7 @@ public class StudentController {
 	}
 	
 	@GetMapping
-	ResponseEntity<List<GetDataResponse>> getAllStudent() {
+	ResponseEntity<List<DataResponse>> getAllStudent() {
 		return ResponseEntity.ok(studentService.getAllIdentity());
 	}
 	

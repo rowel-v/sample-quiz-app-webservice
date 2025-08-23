@@ -5,7 +5,7 @@ import java.util.Map;
 import lombok.Value;
 
 @Value
-public class GetDataResponse {
+public class DataResponse {
 	
 	private String firstname;
 	private String lastname;

@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.student.GetDataResponse;
+import com.example.quizApp.dto.student.DataResponse;
 import com.example.quizApp.dto.student.SaveIdentityRequest;
 import com.example.quizApp.dto.student.UpdateIdentityRequest;
 import com.example.quizApp.exception.StudentNotFoundException;
@@ -54,7 +54,7 @@ public class StudentService {
 		return Save.SAVE_SUCCESS;
 	}
 
-	public GetDataResponse getIdentity() {
+	public DataResponse getIdentity() {
 		return studentAccountRepo.findByUsername(studentUsername.get())
 				.map(acc -> StudentMapper.INSTANCE.toGetDataResponse(acc.getStudent()))
 				.orElseThrow(() -> new StudentNotFoundException());	
@@ -78,7 +78,7 @@ public class StudentService {
 		studentAccountRepo.deleteById(studentDetails.get().getAccountId());
 	}
 
-	public List<GetDataResponse> getAllIdentity() {	
+	public List<DataResponse> getAllIdentity() {	
 		return studentRepo.findAll()
 				.stream()
 				.map(StudentMapper.INSTANCE::toGetDataResponse)
