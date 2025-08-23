@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.teacher.TeacherDto;
+import com.example.quizApp.dto.teacher.SaveTeacherIdentityRequest;
+import com.example.quizApp.dto.teacher.TeacherIdentityResponse;
+import com.example.quizApp.dto.teacher.UpdateTeacherIdentityRequest;
 import com.example.quizApp.result.shared.Result.Save;
 import com.example.quizApp.service.teacher.TeacherService;
 
@@ -25,8 +27,8 @@ public class TeacherController {
 	private final TeacherService teacherService;
 	
 	@PostMapping("save")
-	ResponseEntity<Void> save(@RequestBody @Valid TeacherDto teacherDto) {
-		Save res = teacherService.saveIdentity(teacherDto);
+	ResponseEntity<Void> save(@RequestBody @Valid SaveTeacherIdentityRequest req) {
+		Save res = teacherService.saveIdentity(req);
 		return switch (res) {
 		case ALREADY_SAVE -> ResponseEntity.status(409).build();
 		case SAVE_SUCCESS ->  ResponseEntity.created(URI.create("teacher/data")).build();
@@ -34,13 +36,13 @@ public class TeacherController {
 	}
 	
 	@PutMapping("update")
-	ResponseEntity<Void> update(@RequestBody @Valid TeacherDto teacherDto) {
-		teacherService.updateIdentity(teacherDto);
+	ResponseEntity<Void> update(@RequestBody @Valid UpdateTeacherIdentityRequest req) {
+		teacherService.updateIdentity(req);
 		return ResponseEntity.status(204).build();
 	}
 	
 	@GetMapping("data")
-	ResponseEntity<TeacherDto> get() {
+	ResponseEntity<TeacherIdentityResponse> get() {
 		return ResponseEntity.ok(teacherService.getIdentity());
 	}
 	

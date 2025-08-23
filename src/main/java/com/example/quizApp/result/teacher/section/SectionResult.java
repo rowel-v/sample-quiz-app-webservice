@@ -9,7 +9,9 @@ public class SectionResult {
 	
 	public enum Update {
 		SUCCESS,
-		SECTION_NOT_FOUND
+		SECTION_NOT_FOUND,
+		SECTION_STILL_SAME,
+		SECTION_ALREADY_EXISTS
 	}
 	
 	public enum Delete {

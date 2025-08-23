@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.shared.SignupRequest;
+import com.example.quizApp.dto.shared.SignupRequestDTO;
 import com.example.quizApp.result.shared.Result.Signup;
 import com.example.quizApp.service.student.account.StudentAccountService;
 
@@ -23,7 +23,7 @@ public class StudentSignupController {
 	private final StudentAccountService service;
 	
 	@PostMapping("signup")
-	ResponseEntity<?> signupReq(@RequestBody @Valid SignupRequest req) {
+	ResponseEntity<?> signupReq(@RequestBody @Valid SignupRequestDTO req) {
 		
 		Signup result = service.createAccount(req); 
 		return switch (result) {

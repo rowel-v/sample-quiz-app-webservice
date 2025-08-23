@@ -24,7 +24,7 @@ public interface StudentMapper {
 	public Student toEntity(UpdateIdentityRequest updateIdentityRequest);
 	
 	@Mapping(target = "account", expression = "java(accountToDto(student.getAccount()))")
-	public DataResponse toGetDataResponse(Student student);
+	public DataResponse toDTO(Student student);
 	
 	default Map<String, String> accountToDto(StudentAccount account) {
 		return Map.of("username", account.getUsername(), "password", "PROTECTED");

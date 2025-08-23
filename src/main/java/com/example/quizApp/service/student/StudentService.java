@@ -56,7 +56,7 @@ public class StudentService {
 
 	public DataResponse getIdentity() {
 		return studentAccountRepo.findByUsername(studentUsername.get())
-				.map(acc -> StudentMapper.INSTANCE.toGetDataResponse(acc.getStudent()))
+				.map(acc -> StudentMapper.INSTANCE.toDTO(acc.getStudent()))
 				.orElseThrow(() -> new StudentNotFoundException());	
 	}
 
@@ -81,7 +81,7 @@ public class StudentService {
 	public List<DataResponse> getAllIdentity() {	
 		return studentRepo.findAll()
 				.stream()
-				.map(StudentMapper.INSTANCE::toGetDataResponse)
+				.map(StudentMapper.INSTANCE::toDTO)
 				.collect(Collectors.toList());
 	}
 

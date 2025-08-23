@@ -50,23 +50,6 @@ public class Section {
 		this.year = year;
 	}
 
-	@Override
-	public int hashCode() {
-		return Objects.hash(name);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Section other = (Section) obj;
-		return Objects.equals(name, other.name);
-	}
-
 	public void generateSectionCode() {
 		sectionCode = generateRandomCode();
 	}
@@ -82,5 +65,22 @@ public class Section {
 			code.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
 		}
 		return code.toString();
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(campus, name, year);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Section other = (Section) obj;
+		return Objects.equals(campus, other.campus) && Objects.equals(name, other.name) && year == other.year;
 	}
 }

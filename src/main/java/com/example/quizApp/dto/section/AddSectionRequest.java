@@ -4,12 +4,10 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Value;
 
-@Getter @Setter @Builder
-public class SectionDTO {
+@Value
+public class AddSectionRequest {
 	
 	@NotBlank @Size(min = 1, max = 20)
 	private String name;

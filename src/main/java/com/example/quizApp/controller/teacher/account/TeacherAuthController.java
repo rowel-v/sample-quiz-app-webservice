@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.teacher.account.TeacherAccountDto;
+import com.example.quizApp.dto.shared.LoginRequestDTO;
 import com.example.quizApp.service.teacher.account.TeacherAccountService;
 
 import jakarta.validation.Valid;
@@ -19,8 +19,8 @@ public class TeacherAuthController {
 	private final TeacherAccountService teacherAccountService;
 
 	@PostMapping("login")
-	ResponseEntity<String> login(@RequestBody @Valid TeacherAccountDto teacherAccountDto) {
-		String res = teacherAccountService.loginAccount(teacherAccountDto);
+	ResponseEntity<String> login(@RequestBody @Valid LoginRequestDTO loginRequest) {
+		String res = teacherAccountService.loginAccount(loginRequest);
 		return ResponseEntity.ok(res);
 	}
 }

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.shared.LoginRequest;
+import com.example.quizApp.dto.shared.LoginRequestDTO;
 import com.example.quizApp.service.student.account.StudentAccountService;
 
 import jakarta.validation.Valid;
@@ -19,7 +19,7 @@ public class StudentAuthController {
 	private final StudentAccountService sAccountService;
 	
 	@PostMapping("login")
-	public ResponseEntity<?> LoginReq(@RequestBody @Valid LoginRequest req) {
+	public ResponseEntity<?> LoginReq(@RequestBody @Valid LoginRequestDTO req) {
 		String result = sAccountService.loginAccount(req);
 		return ResponseEntity.ok(result);		
 	}

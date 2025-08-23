@@ -7,7 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.section.SectionDTO;
+import com.example.quizApp.dto.section.AddSectionRequest;
+import com.example.quizApp.dto.section.SectionDataResponse;
+import com.example.quizApp.dto.section.UpdateSectionRequest;
 import com.example.quizApp.exception.TeacherNotFoundException;
 import com.example.quizApp.exception.UnauthorizedException;
 import com.example.quizApp.mapper.section.SectionMapper;
@@ -36,23 +38,23 @@ public class SectionService {
 		throw new UnauthorizedException();
 	};
 
-	public SectionResult.Add addSection(SectionDTO sectionDTO) {
+	public SectionResult.Add addSection(AddSectionRequest req) {
 		return teacherAccountRepo.findByUsername(accountUsername.get())
 				.map(acc -> {
 					Teacher teacher = acc.getTeacher();
 					if (teacher != null) {
-						Section section = SectionMapper.INSTANCE.toEntity(sectionDTO);
+						Section section = SectionMapper.INSTANCE.toEntity(req);
 						var sectionAlreadyExists = sectionRepo.findAll().contains(section);
 						if (sectionAlreadyExists) return Add.SECTION_ALREADY_ADDED;
 
 						section.setTeacher(teacher);
 						section.generateSectionCode();
-						
+
 						var sectionCodeAlreadyExists = sectionRepo.existsBySectionCode(section.getSectionCode());
 						while (sectionCodeAlreadyExists) {
 							section.generateSectionCode();
 						}
-						
+
 						teacher.getSections().add(section);
 						teacherRepo.save(teacher);
 						return SectionResult.Add.SUCCESS;
@@ -62,7 +64,7 @@ public class SectionService {
 	}
 
 
-	public Set<SectionDTO> getSectionsHandled() {
+	public Set<SectionDataResponse> getSectionsHandled() {
 		return teacherAccountRepo.findByUsername(accountUsername.get())
 				.map(acc -> {
 					if (acc.getTeacher() != null) {
@@ -84,24 +86,38 @@ public class SectionService {
 				.orElse(Delete.SECTION_NOT_FOUND);
 	}
 
-	public SectionResult.Update updateSection(String sectionNameToUpdate, SectionDTO sectionDTO) {
+	public SectionResult.Update updateSection(String sectionNameToUpdate, UpdateSectionRequest req) {
 		return teacherAccountRepo.findByUsername(accountUsername.get())
 				.map(acc -> {
 					Teacher teacher = acc.getTeacher();
 					if (teacher != null) {
 						return sectionRepo.findByName(sectionNameToUpdate)
 								.map(sectionToUpdate -> {
-									sectionRepo.delete(sectionToUpdate);
-									Section sectionToReplace = SectionMapper.INSTANCE.toEntity(sectionDTO);
-									sectionToReplace.setTeacher(teacher);
-									
-									sectionToReplace.generateSectionCode();
-									
-									var sectionCodeAlreadyExists = sectionRepo.existsBySectionCode(sectionToReplace.getSectionCode());
-									while (sectionCodeAlreadyExists) {
-										sectionToReplace.generateSectionCode();
+
+									Section sectionToReplace = SectionMapper.INSTANCE.toEntity(req);
+
+									if (sectionToUpdate.equals(sectionToReplace)) {
+										return SectionResult.Update.SECTION_STILL_SAME;
 									}
-									
+
+									var s = sectionToReplace.getName().equals(sectionToUpdate.getName()) &&
+											(sectionToReplace.getYear() != sectionToUpdate.getYear() ||
+											!sectionToReplace.getCampus().equals(sectionToUpdate.getCampus()));
+
+									if (s) {
+										if (sectionRepo.existsByName(req.getName())) 
+											return SectionResult.Update.SECTION_ALREADY_EXISTS;
+									}
+
+									sectionRepo.delete(sectionToUpdate);
+
+									sectionToReplace.setTeacher(teacher);
+									sectionToReplace.generateSectionCode();
+
+									do {
+										sectionToReplace.generateSectionCode();
+									} while (sectionRepo.existsBySectionCode(sectionToReplace.getSectionCode()));
+
 									sectionRepo.save(sectionToReplace);
 									return SectionResult.Update.SUCCESS;
 								})

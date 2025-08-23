@@ -7,7 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.teacher.account.TeacherAccountDto;
+import com.example.quizApp.dto.shared.LoginRequestDTO;
+import com.example.quizApp.dto.shared.SignupRequestDTO;
 import com.example.quizApp.mapper.teacher.account.TeacherAccountMapper;
 import com.example.quizApp.model.teacher.account.TeacherAccount;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
@@ -26,22 +27,22 @@ public class TeacherAccountService {
 	private final PasswordEncoder teacherPasswordEncoder;
 
 	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
-	public String loginAccount(TeacherAccountDto accountDto) {
+	public String loginAccount(LoginRequestDTO req) {
 
 		Authentication auth = teacherAuthProvider.authenticate(new UsernamePasswordAuthenticationToken(
-				accountDto.getUsername(), accountDto.getPassword()));
+				req.getUsername(), req.getPassword()));
 
 		if (auth.isAuthenticated()) return jwtUtil.generateToken(auth.getName());
 
 		throw new BadCredentialsException("Invalid Credentials");
 	}
 
-	public Result.Signup signupRequest(TeacherAccountDto accountDto) {
+	public Result.Signup signupRequest(SignupRequestDTO req) {
 
-		return teacherAccountRepo.findByUsername(accountDto.getUsername())
+		return teacherAccountRepo.findByUsername(req.getUsername())
 				.map(r -> Signup.USERNAME_ALREADY_TAKEN)
 				.orElseGet(() -> {
-					TeacherAccount teacherAccount = TeacherAccountMapper.INSTANCE.toEntity(accountDto);
+					TeacherAccount teacherAccount = TeacherAccountMapper.INSTANCE.toEntity(req);
 					teacherAccount.setPassword(teacherPasswordEncoder.encode(teacherAccount.getPassword()));
 					teacherAccountRepo.save(teacherAccount);
 					return Signup.SIGNUP_SUCCESS;

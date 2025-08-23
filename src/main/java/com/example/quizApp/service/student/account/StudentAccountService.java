@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.shared.LoginRequest;
-import com.example.quizApp.dto.shared.SignupRequest;
+import com.example.quizApp.dto.shared.LoginRequestDTO;
+import com.example.quizApp.dto.shared.SignupRequestDTO;
 import com.example.quizApp.mapper.student.account.StudentAccountMapper;
 import com.example.quizApp.model.student.account.StudentAccount;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
@@ -27,7 +27,7 @@ public class StudentAccountService {
 
 	private final AuthenticationProvider studentAuthProvider;
 
-	public Result.Signup createAccount(SignupRequest req) {
+	public Result.Signup createAccount(SignupRequestDTO req) {
 		StudentAccount account = StudentAccountMapper.INSTANCE.toEntity(req);
 		return studentAccountRepo.findByUsername(account.getUsername())
 				.map(a -> Result.Signup.USERNAME_ALREADY_TAKEN)
@@ -39,7 +39,7 @@ public class StudentAccountService {
 	}
 
 	// exception handled if BadCredentials has been throw in my exception.handler.AuthExceptionHandler
-	public String loginAccount(LoginRequest req) {
+	public String loginAccount(LoginRequestDTO req) {
 		Authentication auth = studentAuthProvider.authenticate(new UsernamePasswordAuthenticationToken(
 				req.getUsername(), req.getPassword()));
 
