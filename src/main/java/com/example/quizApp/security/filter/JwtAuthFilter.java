@@ -34,41 +34,33 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 	private final JwtUtil jwtUtil;
 
 	private String username;
-	private String requestURI;
 
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 
-		requestURI = request.getRequestURI();
+		var requestURI = request.getRequestURI();
 
 		if (requestIsPublic(requestURI)) {
 			filterChain.doFilter(request, response);
 			return;
 		}
 
-		var authHeaderValue = request.getHeader("Authorization");
+		var authorization = request.getHeader("Authorization");
 
-		if (authHeaderNotInFormat(authHeaderValue)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			filterChain.doFilter(request, response);
-			return;
-		}
+		if (authorization != null && authorization.startsWith("Bearer ")) {
 
-		var token = authHeaderValue.substring(7);
+			var token = authorization.substring(7);
 
-		try {
-			username = jwtUtil.extractUsername(token);
-		} catch (JwtException e) {
-			System.out.println("\n" + e.getMessage() + "\n");
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			filterChain.doFilter(request, response);
-			return;
-		}
+			try {
+				username = jwtUtil.extractUsername(token);
+			} catch (JwtException e) {
+				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+				response.setContentType("text/plain");
+				response.getWriter().append(e.getMessage());
+				return;
+			}
 
-
-		if (username != null) {
-			
 			if (requestURI.startsWith("/student")) {
 
 				StudentDetails studentDetails;
@@ -78,12 +70,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 					filterChain.doFilter(request, response);
 					return;
 				}
-				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-						studentDetails, null, studentDetails.getAuthorities());
 
 				if (SecurityContextHolder.getContext().getAuthentication() == null) {
+					UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+							studentDetails, null, studentDetails.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
+				
 			} else if (requestURI.startsWith("/teacher")) {
 
 				TeacherDetails teacherDetails;
@@ -93,24 +86,18 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 					filterChain.doFilter(request, response);
 					return;
 				}
-				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
-						teacherDetails, null, teacherDetails.getAuthorities());
-
+				
 				if (SecurityContextHolder.getContext().getAuthentication() == null) {
+					UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
+							teacherDetails, null, teacherDetails.getAuthorities());
 					SecurityContextHolder.getContext().setAuthentication(auth);
 				}
 			}
 		}
-
 		filterChain.doFilter(request, response);
 	}
 
-
 	private boolean requestIsPublic(String reqURI) {
 		return entryEndPoint.stream().anyMatch(reqURI::matches);
-	}
-
-	private boolean authHeaderNotInFormat(String header) {
-		return !(header != null && header.startsWith("Bearer "));
 	}
 }
