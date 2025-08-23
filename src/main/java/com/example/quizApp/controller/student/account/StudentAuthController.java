@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.quizApp.dto.student.account.LoginRequest;
+import com.example.quizApp.dto.shared.LoginRequest;
 import com.example.quizApp.service.student.account.StudentAccountService;
 
 import jakarta.validation.Valid;

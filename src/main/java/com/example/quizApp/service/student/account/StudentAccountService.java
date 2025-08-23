@@ -7,8 +7,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.quizApp.dto.student.account.LoginRequest;
-import com.example.quizApp.dto.student.account.SignupRequest;
+import com.example.quizApp.dto.shared.LoginRequest;
+import com.example.quizApp.dto.shared.SignupRequest;
 import com.example.quizApp.mapper.student.account.StudentAccountMapper;
 import com.example.quizApp.model.student.account.StudentAccount;
 import com.example.quizApp.repo.student.account.StudentAccountRepo;
