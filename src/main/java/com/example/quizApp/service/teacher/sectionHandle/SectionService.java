@@ -100,15 +100,11 @@ public class SectionService {
 										return SectionResult.Update.SECTION_STILL_SAME;
 									}
 
-									var s = sectionToReplace.getName().equals(sectionToUpdate.getName()) &&
-											(sectionToReplace.getYear() != sectionToUpdate.getYear() ||
-											!sectionToReplace.getCampus().equals(sectionToUpdate.getCampus()));
-
-									if (s) {
-										if (sectionRepo.existsByName(req.getName())) 
-											return SectionResult.Update.SECTION_ALREADY_EXISTS;
+									var sectionName = sectionToReplace.getName();
+									if (!sectionName.equals(sectionToUpdate.getName()) && sectionRepo.existsByName(sectionName)) {
+										return SectionResult.Update.SECTION_ALREADY_EXISTS;
 									}
-
+									
 									sectionRepo.delete(sectionToUpdate);
 
 									sectionToReplace.setTeacher(teacher);
