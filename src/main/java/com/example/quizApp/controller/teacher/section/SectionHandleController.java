@@ -1,4 +1,4 @@
-package com.example.quizApp.controller.teacher;
+package com.example.quizApp.controller.teacher.section;
 
 import java.net.URI;
 import java.util.Set;

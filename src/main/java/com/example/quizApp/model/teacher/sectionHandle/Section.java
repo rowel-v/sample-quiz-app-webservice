@@ -1,16 +1,22 @@
 package com.example.quizApp.model.teacher.sectionHandle;
 
 import java.security.SecureRandom;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import com.example.quizApp.model.teacher.Teacher;
+import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.Subject;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import lombok.Builder;
@@ -41,9 +47,13 @@ public class Section {
 	@ManyToOne
 	@JoinColumn(name = "teacher_owner")
 	private Teacher teacher;
+	
+	@Getter
+	@OneToMany(mappedBy = "sectionOwner", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	private Set<Subject> subjects = new HashSet<>();
 
 	@Builder
-	private Section(String name, String campus, int year) {
+ 	private Section(String name, String campus, int year) {
 		super();
 		this.name = name;
 		this.campus = campus;
