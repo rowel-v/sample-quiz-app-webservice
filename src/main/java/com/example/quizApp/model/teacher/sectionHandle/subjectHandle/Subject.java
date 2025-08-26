@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -28,7 +29,7 @@ public class Subject {
 	
 	@Setter @Getter
 	@ManyToOne
-	@JoinColumn(name = "section_owner")
+	@JoinColumn(name = "section_owner", referencedColumnName = "name")
 	private Section sectionOwner;
 	
 	Subject() {}
