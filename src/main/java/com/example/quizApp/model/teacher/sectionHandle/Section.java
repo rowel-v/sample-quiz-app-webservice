@@ -24,7 +24,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "section_handle", schema = "teacher_schema")
+@Table(name = "section", schema = "teacher_schema")
 public class Section {
 
 	Section() {}
