@@ -98,7 +98,7 @@ public class StudentService {
 								var validCode = section.getSectionCode().equals(sectionCode);
 								if (!validCode) return SaveSection.INVALID_SECTION_CODE;
 
-								student.setSection(section.getName());
+								student.setSection(section);
 								studentRepo.save(student);
 								return SaveSection.SUCCESS;
 							})

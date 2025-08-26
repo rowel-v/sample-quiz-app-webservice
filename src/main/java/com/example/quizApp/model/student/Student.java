@@ -5,7 +5,9 @@ import java.util.Objects;
 import org.hibernate.annotations.Formula;
 
 import com.example.quizApp.model.student.account.StudentAccount;
+import com.example.quizApp.model.teacher.sectionHandle.Section;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -38,7 +40,9 @@ public class Student {
 	private String fullname;
 	
 	@Getter @Setter
-	private String section;
+	@OneToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "section", referencedColumnName = "name")
+	private Section section;
 	
 	@Getter @Setter
 	@OneToOne(fetch = FetchType.LAZY)
