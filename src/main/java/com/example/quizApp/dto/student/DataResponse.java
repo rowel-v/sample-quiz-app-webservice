@@ -1,6 +1,7 @@
 package com.example.quizApp.dto.student;
 
-import java.util.Map;
+import com.example.quizApp.dto.section.SectionDTO;
+import com.example.quizApp.dto.shared.AccountDTO;
 
 import lombok.Value;
 
@@ -10,7 +11,7 @@ public class DataResponse {
 	private String firstname;
 	private String lastname;
 	private String fullname;
-	private String section;
 	
-	private Map<String, String> account; // contains username and passsword
+	private AccountDTO account;
+	private SectionDTO section;
 }
