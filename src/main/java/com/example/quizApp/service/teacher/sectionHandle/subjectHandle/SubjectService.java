@@ -34,7 +34,7 @@ public class SubjectService {
 		throw new UnauthorizedException();
 	};
 
-	public SubjectResult.Add addSubject(String sectionName, AddSubjectRequest req) {
+	public SubjectResult.Add add(String sectionName, AddSubjectRequest req) {
 		return teacherAccountRepo.findByUsername(accountUsername.get())
 				.map(acc -> {
 					Teacher owner = acc.getTeacher();
@@ -46,18 +46,46 @@ public class SubjectService {
 								.orElseThrow(() -> new SectionNotFoundException());
 
 						Subject subjectReq = Subject.builder().name(req.getSubjectName()).build();
-						
-						boolean subjectAlreadyExists = sectionOwner.getSubjects().contains(subjectReq);
 
+						boolean subjectAlreadyExists = sectionOwner.getSubjects().contains(subjectReq);
+						
 						if (subjectAlreadyExists) {
 							return SubjectResult.Add.SUBJECT_ALREADY_EXISTS;
 						}
-						
+
 						subjectReq.setSectionOwner(sectionOwner);
 						sectionOwner.getSubjects().add(subjectReq);
 						sectionRepo.save(sectionOwner);
-						
+
 						return SubjectResult.Add.SUBJECT_ADDED_SUCCESS;
+					}
+					throw new TeacherNotFoundException();
+				})
+				.orElseThrow(() -> new UnauthorizedException());
+	}
+
+	public SubjectResult.Delete delete(String sectionName, String subjectName) {
+		return teacherAccountRepo.findByUsername(accountUsername.get())
+				.map(acc -> {
+
+					Teacher teacher = acc.getTeacher();
+
+					if (teacher != null) {
+
+						Section sectionOwner = teacher.getSections().stream()
+								.filter(section -> section.getName().equals(sectionName))
+								.findFirst()
+								.orElseThrow(() -> new SectionNotFoundException());
+						
+						
+						Subject subjectToRemove = Subject.builder().name(subjectName).build();
+						
+						boolean foundAndRemoved = sectionOwner.getSubjects().removeIf(subjectToRemove::equals);
+						
+						if (!foundAndRemoved) return SubjectResult.Delete.SUBJECT_NOT_FOUND;
+						
+						sectionRepo.save(sectionOwner);
+						return SubjectResult.Delete.SUBJECT_DELETE_SUCCESS;
 					}
 					throw new TeacherNotFoundException();
 				})

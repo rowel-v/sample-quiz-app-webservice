@@ -49,7 +49,7 @@ public class Section {
 	private Teacher teacher;
 	
 	@Getter
-	@OneToMany(mappedBy = "sectionOwner", fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@OneToMany(mappedBy = "sectionOwner", fetch = FetchType.LAZY, cascade = CascadeType.MERGE, orphanRemoval = true)
 	private Set<Subject> subjects = new HashSet<>();
 
 	@Builder
