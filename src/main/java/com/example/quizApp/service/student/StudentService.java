@@ -95,7 +95,7 @@ public class StudentService {
 
 					return sectionRepo.findByName(sectionName)
 							.map(section -> {
-								var validCode = section.getSectionCode().equals(sectionCode);
+								var validCode = section.getCode().equals(sectionCode);
 								if (!validCode) return SaveSection.INVALID_SECTION_CODE;
 
 								student.setSection(section);

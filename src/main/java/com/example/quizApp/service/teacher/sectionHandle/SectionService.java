@@ -43,18 +43,13 @@ public class SectionService {
 				.map(acc -> {
 					Teacher teacher = acc.getTeacher();
 					if (teacher != null) {
+
 						Section section = SectionMapper.INSTANCE.toEntity(req);
+
 						var sectionAlreadyExists = sectionRepo.findAll().contains(section);
 						if (sectionAlreadyExists) return Add.SECTION_ALREADY_ADDED;
 
 						section.setTeacher(teacher);
-						section.generateSectionCode();
-
-						var sectionCodeAlreadyExists = sectionRepo.existsBySectionCode(section.getSectionCode());
-						while (sectionCodeAlreadyExists) {
-							section.generateSectionCode();
-						}
-
 						teacher.getSections().add(section);
 						teacherRepo.save(teacher);
 						return SectionResult.Add.SUCCESS;
@@ -101,19 +96,14 @@ public class SectionService {
 									}
 
 									var sectionName = sectionToReplace.getName();
+
 									if (!sectionName.equals(sectionToUpdate.getName()) && sectionRepo.existsByName(sectionName)) {
 										return SectionResult.Update.SECTION_ALREADY_EXISTS;
 									}
-									
+
 									sectionRepo.delete(sectionToUpdate);
 
 									sectionToReplace.setTeacher(teacher);
-									sectionToReplace.generateSectionCode();
-
-									do {
-										sectionToReplace.generateSectionCode();
-									} while (sectionRepo.existsBySectionCode(sectionToReplace.getSectionCode()));
-
 									sectionRepo.save(sectionToReplace);
 									return SectionResult.Update.SUCCESS;
 								})

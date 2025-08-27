@@ -17,6 +17,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 import lombok.Builder;
@@ -41,7 +42,7 @@ public class Section {
 	private int year;
 
 	@Getter @Setter
-	private String sectionCode;
+	private String code;
 
 	@Getter @Setter
 	@ManyToOne
@@ -60,21 +61,20 @@ public class Section {
 		this.year = year;
 	}
 
+	@PrePersist
 	public void generateSectionCode() {
-		sectionCode = generateRandomCode();
-	}
 
-	private String generateRandomCode() {
-		final String CHARACTERS = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+		final String CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 		final int CODE_LENGTH = 6;
 
 		SecureRandom random = new SecureRandom();
-		StringBuilder code = new StringBuilder();
+		StringBuilder code = new StringBuilder(CODE_LENGTH);
 
 		for (int i = 0; i < CODE_LENGTH; i++) {
 			code.append(CHARACTERS.charAt(random.nextInt(CHARACTERS.length())));
 		}
-		return code.toString();
+		
+		this.code = code.toString();
 	}
 
 	@Override

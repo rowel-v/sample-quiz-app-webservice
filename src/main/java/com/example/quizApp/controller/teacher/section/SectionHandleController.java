@@ -47,7 +47,7 @@ public class SectionHandleController {
 		SectionResult.Update res = sectionService.updateSection(sectionNameToUpdate, req);
 		return switch (res) {
 		case SECTION_NOT_FOUND -> ResponseEntity.status(404).build();
-		case SECTION_STILL_SAME -> ResponseEntity.ok("Section still same");
+		case SECTION_STILL_SAME -> ResponseEntity.ok("Nothing to update");
 		case SECTION_ALREADY_EXISTS -> ResponseEntity.status(409).body("Section: " + req.getName() + " already exists");
 		case SUCCESS -> ResponseEntity.status(204).build();
 		};
