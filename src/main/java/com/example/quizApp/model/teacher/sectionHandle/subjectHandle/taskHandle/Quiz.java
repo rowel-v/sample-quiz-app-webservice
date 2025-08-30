@@ -1,7 +1,9 @@
-package com.example.quizApp.model.teacher.sectionHandle.subjectHandle.task;
+package com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -18,17 +20,20 @@ public class Quiz {
 	@Id @Setter(value = AccessLevel.NONE)
 	private Long id;
 	
-	private int quizNumber;
-	private int questionSize;
+	@Column(name = "quiz_number")
+	private int number;
+	
+	@Column(name = "quiz_question")
+	private String question;
 	
 	@OneToMany(mappedBy = "quizOwner")
-	private List<Question> question;
+	private List<QuizChoices> choices = new ArrayList<>();
 	
 	@Builder
-	private Quiz(int quizNumber, int questionSize) {
+	private Quiz(int number, String question) {
 		super();
-		this.quizNumber = quizNumber;
-		this.questionSize = questionSize;
+		this.number = number;
+		this.question = question;
 	}
 
 }
