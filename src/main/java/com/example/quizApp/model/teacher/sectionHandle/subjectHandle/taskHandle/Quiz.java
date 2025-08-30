@@ -1,11 +1,18 @@
 package com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.Subject;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
@@ -18,6 +25,7 @@ import lombok.Setter;
 public class Quiz {
 	
 	@Id @Setter(value = AccessLevel.NONE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	@Column(name = "quiz_number")
@@ -26,14 +34,21 @@ public class Quiz {
 	@Column(name = "quiz_question")
 	private String question;
 	
-	@OneToMany(mappedBy = "quizOwner")
-	private List<QuizChoices> choices = new ArrayList<>();
+	@OneToMany(mappedBy = "quizOwner", cascade = CascadeType.MERGE)
+	private Set<QuizChoices> choices = new HashSet<>();
+	
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "subject", referencedColumnName = "name")
+	private Subject subjectOwner;
+	
+	Quiz() {}
 	
 	@Builder
-	private Quiz(int number, String question) {
+	private Quiz(int number, String question, Set<QuizChoices> choices) {
 		super();
 		this.number = number;
 		this.question = question;
+		this.choices = choices;
 	}
 
 }

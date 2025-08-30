@@ -1,15 +1,20 @@
 package com.example.quizApp.model.teacher.sectionHandle.subjectHandle;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import com.example.quizApp.model.teacher.sectionHandle.Section;
+import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.Quiz;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 import lombok.Builder;
@@ -31,6 +36,10 @@ public class Subject {
 	@ManyToOne
 	@JoinColumn(name = "section_owner", referencedColumnName = "name")
 	private Section sectionOwner;
+	
+	@Getter
+	@OneToMany(mappedBy = "subjectOwner", cascade = CascadeType.MERGE)
+	private Set<Quiz> quizHandle = new HashSet<>();
 
 	Subject() {}
 

@@ -21,11 +21,13 @@ public class QuizChoices {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn(name = "question")
+	@JoinColumn(name = "question", referencedColumnName = "quiz_question")
 	private Quiz quizOwner;
 	
 	private char letter;
 	private String selection;
+	
+	QuizChoices() {}
 	
 	@Builder
 	private QuizChoices(Quiz quizOwner, char letter, String selection) {
