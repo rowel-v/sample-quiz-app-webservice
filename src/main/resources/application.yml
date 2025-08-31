@@ -11,3 +11,6 @@ spring:
       validation-timeout: 5000
   jpa:
     show-sql: true
+    hibernate:
+      ddl-auto: validate
+    
