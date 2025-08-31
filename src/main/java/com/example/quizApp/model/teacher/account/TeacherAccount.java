@@ -23,7 +23,7 @@ public class TeacherAccount {
 	
 	@Id @Setter
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 	
 	@Getter @Setter
 	private String username;

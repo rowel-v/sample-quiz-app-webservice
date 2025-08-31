@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.QuizChoices;
 
 @Repository
-public interface QuizChoicesRepo extends JpaRepository<QuizChoices, Long> {
+public interface QuizChoicesRepo extends JpaRepository<QuizChoices, Integer> {
 
 }

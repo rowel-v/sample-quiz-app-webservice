@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.Quiz;
 
 @Repository
-public interface QuizRepo extends JpaRepository<Quiz, Long>{
+public interface QuizRepo extends JpaRepository<Quiz, Integer>{
 
 }

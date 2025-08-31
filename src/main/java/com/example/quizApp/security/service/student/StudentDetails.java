@@ -17,7 +17,7 @@ public class StudentDetails implements UserDetails {
 
 	private final String username;
 	private final String password;
-	private final Long accountId;
+	private final Integer accountId;
 
 	private Collection<? extends GrantedAuthority> authorities;
 
@@ -36,7 +36,7 @@ public class StudentDetails implements UserDetails {
 		return username;
 	}
 
-	public Long getAccountId() {
+	public Integer getAccountId() {
 		return accountId;
 	}
 

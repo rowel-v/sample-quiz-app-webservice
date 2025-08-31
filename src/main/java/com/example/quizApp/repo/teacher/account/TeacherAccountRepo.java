@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.quizApp.model.teacher.account.TeacherAccount;
 
 @Repository
-public interface TeacherAccountRepo extends JpaRepository<TeacherAccount, Long> {
+public interface TeacherAccountRepo extends JpaRepository<TeacherAccount, Integer> {
 	
 	Optional<TeacherAccount> findByUsername(String username);
 

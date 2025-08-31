@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.quizApp.model.teacher.sectionHandle.Section;
 
 @Repository
-public interface SectionRepo extends JpaRepository<Section, Long> {
+public interface SectionRepo extends JpaRepository<Section, Integer> {
 	Optional<Section> findByName(String name);
 	boolean existsByName(String name);
 }

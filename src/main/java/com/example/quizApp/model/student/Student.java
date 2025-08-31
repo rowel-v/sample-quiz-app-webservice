@@ -29,7 +29,7 @@ public class Student {
 	Student() {}
 	
 	@GeneratedValue(strategy = GenerationType.IDENTITY) @Setter(AccessLevel.NONE) 
-	@Id private Long id;
+	@Id private Integer id;
 	
 	@Getter
 	private String firstname;

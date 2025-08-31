@@ -18,7 +18,7 @@ public class QuizChoices {
 	
 	@Id @Setter(value = AccessLevel.NONE)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 	
 	@ManyToOne
 	@JoinColumn(name = "question", referencedColumnName = "quiz_question")

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.example.quizApp.model.student.account.StudentAccount;
 
 @Repository
-public interface StudentAccountRepo extends JpaRepository<StudentAccount, Long>{
+public interface StudentAccountRepo extends JpaRepository<StudentAccount, Integer>{
 	
 	Optional<StudentAccount> findByUsername(String username);
 	

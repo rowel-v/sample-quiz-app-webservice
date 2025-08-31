@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.Subject;
 
 @Repository
-public interface SubjectRepo extends JpaRepository<Subject, Long>{
+public interface SubjectRepo extends JpaRepository<Subject, Integer>{
 
 }

@@ -26,7 +26,7 @@ public class Quiz {
 	
 	@Id @Setter(value = AccessLevel.NONE)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 	
 	@Column(name = "quiz_number")
 	private int number;

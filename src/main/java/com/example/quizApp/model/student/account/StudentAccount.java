@@ -25,7 +25,7 @@ public class StudentAccount {
 	StudentAccount() {}
 	
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY) @Setter(value = AccessLevel.NONE)
-	private Long id;
+	private Integer id;
 	
 	private String username;
 	private String password;

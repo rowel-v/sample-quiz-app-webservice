@@ -32,7 +32,7 @@ public class Section {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+	private Integer id;
 
 	@Getter @Setter
 	private String name;
