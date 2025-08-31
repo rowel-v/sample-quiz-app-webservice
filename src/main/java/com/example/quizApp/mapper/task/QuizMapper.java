@@ -17,11 +17,11 @@ public interface QuizMapper {
 	public final static QuizMapper INSTANCE = Mappers.getMapper(QuizMapper.class);
 	
 	@Mapping(target = "quizOwner", ignore = true)
-	public QuizChoices toEntity(AddQuizChoicesRequest req);
+	QuizChoices toEntity(AddQuizChoicesRequest req);
 	
-	public Set<QuizChoices> toEntity(Set<AddQuizChoicesRequest> req);
+	Set<QuizChoices> toEntity(Set<AddQuizChoicesRequest> req);
 
     @Mapping(target = "choices", source = "choices")
-	public Quiz toEntity(AddQuizRequest request);
+	Quiz toEntity(AddQuizRequest request);
 
 }

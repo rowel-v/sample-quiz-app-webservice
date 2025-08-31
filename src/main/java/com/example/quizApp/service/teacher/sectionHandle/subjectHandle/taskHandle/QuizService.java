@@ -17,7 +17,7 @@ import com.example.quizApp.model.teacher.sectionHandle.Section;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.Subject;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.Quiz;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
-import com.example.quizApp.repo.teacher.sectionHandle.subjectHandle.SubjectRepo;
+import com.example.quizApp.repo.teacher.sectionHandle.subjectHandle.taskHandle.QuizRepo;
 import com.example.quizApp.result.teacher.task.QuizResult;
 import com.example.quizApp.result.teacher.task.QuizResult.Add;
 
@@ -27,8 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class QuizService {
 
 	private final TeacherAccountRepo  teacherAccountRepo;
-	private final SubjectRepo subjectRepo;
-	//private final QuizRepo quizRepo;
+	private final QuizRepo quizRepo;
 
 	private Supplier<String> accountOwnerUsername = () -> {
 		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -37,16 +36,13 @@ public class QuizService {
 		throw new UnauthorizedException();
 	};
 
-	//quiz number
-	//quiz question
-
 	public QuizResult.Add addQuiz(AddQuizRequest request, String sectionName, String subjectName) {
 		return teacherAccountRepo.findByUsername(accountOwnerUsername.get())
 				.map(acc -> {
 					Teacher teacherOwner = acc.getTeacher();
+
 					if (teacherOwner != null) {
-						
-						
+
 						Section sectionOwner = teacherOwner.getSections().stream()
 								.filter(sec -> sec.getName().equals(sectionName))
 								.findFirst()
@@ -58,7 +54,7 @@ public class QuizService {
 								.orElseThrow(() -> new SubjectNotFoundException());
 
 						Quiz quizRequest = QuizMapper.INSTANCE.toEntity(request);
-
+						
 						var quizNumberAlreadyExists = subjectOwner.getQuizHandle().stream()
 								.anyMatch(quiz -> quiz.getNumber() == quizRequest.getNumber());
 
@@ -66,32 +62,23 @@ public class QuizService {
 								.anyMatch(quiz -> quiz.getQuestion().equals(quizRequest.getQuestion()));
 
 						QuizResult.Add result;
-						String resultInfo = null;
 
 						if (quizNumberAlreadyExists && quizQuestionAlreadyExists) {
 							result = Add.QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS;
-							resultInfo = String.format("Quiz number %d and question \"%s\" already exists", 
-									quizRequest.getNumber(), quizRequest.getQuestion());
+						}
+						else if (quizNumberAlreadyExists) result = Add.QUIZ_NUMBER_ALREADY_EXISTS;
+						else if (quizQuestionAlreadyExists) result = Add.QUIZ_QUESTION_ALREADY_EXISTS;
+						else {
+							subjectOwner.getQuizHandle().add(quizRequest);
+							quizRequest.setSubjectOwner(subjectOwner);
+							quizRequest.getChoices().forEach(c -> c.setQuizOwner(quizRequest));
+							quizRepo.save(quizRequest);
+							result = Add.QUIZ_ADDED_SUCCESS;
 						}
 
-						if (quizNumberAlreadyExists) {
-							result = Add.QUIZ_NUMBER_ALREADY_EXISTS;
-							resultInfo = "Quiz number " + quizRequest.getNumber() + " already exists";
-						}
-
-						if (quizQuestionAlreadyExists) {
-							result = Add.QUIZ_QUESTION_ALREADY_EXISTS;
-							resultInfo = String.format("Quiz question \"%s\" already exists", quizRequest.getQuestion());
-						}
-
-						quizRequest.setSubjectOwner(subjectOwner);
-						quizRequest.getChoices().forEach(c -> c.setQuizOwner(quizRequest));
-						subjectOwner.getQuizHandle().add(quizRequest);
-						subjectRepo.save(subjectOwner);
-						
-						result = Add.QUIZ_ADDED_SUCCESS;
-						result.setInfo(resultInfo);
-
+						result.setQuizNumber(quizRequest.getNumber());
+						result.setQuizQuestion(quizRequest.getQuestion());
+						result.setQuizSubject(subjectName);
 						return result;
 					}
 					throw new TeacherNotFoundException();

@@ -11,6 +11,7 @@ import com.example.quizApp.dto.quiz.AddQuizRequest;
 import com.example.quizApp.result.teacher.task.QuizResult.Add;
 import com.example.quizApp.service.teacher.sectionHandle.subjectHandle.taskHandle.QuizService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 @RestController @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class QuizOfSubjectController {
 	private final QuizService quizService;
 
 	@PostMapping("{sectionName}/subject/{subjectName}/addquiz")
-	public ResponseEntity<String> addQuiz(@RequestBody AddQuizRequest request, 
+	public ResponseEntity<String> addQuiz(@RequestBody @Valid AddQuizRequest request, 
 			@PathVariable String sectionName, 
 			@PathVariable String subjectName) {
 
@@ -32,7 +33,7 @@ public class QuizOfSubjectController {
 		QUIZ_QUESTION_ALREADY_EXISTS,
 		QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS
 		-> ResponseEntity.status(409).body(result.getInfo());
-		
+
 		case QUIZ_ADDED_SUCCESS -> ResponseEntity.status(204).build();
 		};
 	}

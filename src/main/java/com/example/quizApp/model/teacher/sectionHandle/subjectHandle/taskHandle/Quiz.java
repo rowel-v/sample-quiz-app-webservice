@@ -34,7 +34,7 @@ public class Quiz {
 	@Column(name = "quiz_question")
 	private String question;
 	
-	@OneToMany(mappedBy = "quizOwner", cascade = CascadeType.MERGE)
+	@OneToMany(mappedBy = "quizOwner", cascade = CascadeType.PERSIST)
 	private Set<QuizChoices> choices = new HashSet<>();
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)
