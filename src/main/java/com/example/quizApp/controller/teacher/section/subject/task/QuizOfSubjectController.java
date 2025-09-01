@@ -20,7 +20,7 @@ public class QuizOfSubjectController {
 
 	private final QuizService quizService;
 
-	@PostMapping("{sectionName}/subject/{subjectName}/addquiz")
+	@PostMapping("{sectionName}/subject/{subjectName}/quiz")
 	public ResponseEntity<String> addQuiz(@RequestBody @Valid AddQuizRequest request, 
 			@PathVariable String sectionName, 
 			@PathVariable String subjectName) {
@@ -28,12 +28,9 @@ public class QuizOfSubjectController {
 		Add result = quizService.addQuiz(request, sectionName, subjectName);
 
 		return switch (result) {
-		case
-		QUIZ_NUMBER_ALREADY_EXISTS, 
-		QUIZ_QUESTION_ALREADY_EXISTS,
-		QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS
+		case QUIZ_NUMBER_ALREADY_EXISTS, QUIZ_QUESTION_ALREADY_EXISTS, QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS
 		-> ResponseEntity.status(409).body(result.getInfo());
-
+		case QUZ_ANSWER_NOT_ON_CHOICES -> ResponseEntity.status(400).body(result.getInfo());
 		case QUIZ_ADDED_SUCCESS -> ResponseEntity.status(204).build();
 		};
 	}

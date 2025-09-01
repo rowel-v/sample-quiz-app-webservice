@@ -14,7 +14,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,6 +39,9 @@ public class Quiz {
 	@OneToMany(mappedBy = "quizOwner", cascade = CascadeType.PERSIST)
 	private Set<QuizChoices> choices = new HashSet<>();
 	
+	@OneToOne(mappedBy = "quizOwner", cascade = CascadeType.PERSIST, orphanRemoval = true)
+	private QuizAnswer answer;
+	
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "subject", referencedColumnName = "name")
 	private Subject subjectOwner;
@@ -44,11 +49,12 @@ public class Quiz {
 	Quiz() {}
 	
 	@Builder
-	private Quiz(int number, String question, Set<QuizChoices> choices) {
+	private Quiz(int number, String question, Set<QuizChoices> choices, QuizAnswer answer) {
 		super();
 		this.number = number;
 		this.question = question;
 		this.choices = choices;
+		this.answer = answer;
 	}
 
 }

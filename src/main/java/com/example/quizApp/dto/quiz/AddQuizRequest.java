@@ -19,6 +19,9 @@ public class AddQuizRequest {
 	@NotBlank
 	private String question;
 	
+	@NotNull
+	private Character answer;
+	
 	@NotNull @Size(min = 1, message = "must not be empty")
 	private Set<@Valid AddQuizChoicesRequest> choices;
 	

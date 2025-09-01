@@ -7,6 +7,8 @@ public class QuizResult {
 
 	@RequiredArgsConstructor
 	public enum Add {
+		
+		QUZ_ANSWER_NOT_ON_CHOICES("Quiz answer letter [%s] not found on choices selection in subject %s"),
 
 		QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS("Quiz number %d and question \"%s\" already exists in subject %s."),
 
@@ -18,12 +20,14 @@ public class QuizResult {
 
 		private final String info;
 
+		@Setter private char answer;
 		@Setter private int quizNumber;
 		@Setter private String quizQuestion;
 		@Setter private String quizSubject;
 
 		public String getInfo() {
 			return switch (this) {
+			case QUZ_ANSWER_NOT_ON_CHOICES -> String.format(info, answer, quizSubject);
 			case QUIZ_NUMBER_ALREADY_EXISTS -> String.format(info, quizNumber, quizSubject);
 			case QUIZ_QUESTION_ALREADY_EXISTS -> String.format(info, quizQuestion, quizSubject);
 			case QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS -> {

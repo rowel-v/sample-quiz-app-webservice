@@ -5,34 +5,39 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.Setter;;
 
-@Entity @Table(name = "quiz_choices", schema = "teacher_schema")
-@Setter @Getter @NoArgsConstructor(access = AccessLevel.PACKAGE)
-public class QuizChoices {
+@NoArgsConstructor(access = AccessLevel.PACKAGE)
+@Entity @Table(name = "quiz_answer", schema = "teacher_schema")
+public class QuizAnswer {
 	
-	@Id @Setter(AccessLevel.NONE)
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Setter(AccessLevel.NONE) @Getter
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	private Character letter;
-	private String selection;
+	private Character answer;
 	
-	@ManyToOne
+	public void set(Character answer) {
+		this.answer = answer;
+	}
+	
+	public Character get() {
+		return answer;
+	}
+	
+	@OneToOne() @Getter @Setter
 	@JoinColumn(name = "quiz_id")
 	private Quiz quizOwner;
-	
+
 	@Builder
-	private QuizChoices(Quiz quizOwner, char letter, String selection) {
-		super();
+	private QuizAnswer(char answer, Quiz quizOwner) {
+		this.answer = answer;
 		this.quizOwner = quizOwner;
-		this.letter = letter;
-		this.selection = selection;
 	}
 }
