@@ -36,10 +36,10 @@ public class Quiz {
 	@Column(name = "quiz_question")
 	private String question;
 	
-	@OneToMany(mappedBy = "quizOwner", cascade = CascadeType.PERSIST)
+	@OneToMany(mappedBy = "quizOwner", cascade = CascadeType.PERSIST, orphanRemoval = true)
 	private Set<QuizChoices> choices = new HashSet<>();
 	
-	@OneToOne(mappedBy = "quizOwner", cascade = CascadeType.PERSIST, orphanRemoval = true)
+	@OneToOne(mappedBy = "quizOwner", cascade = {CascadeType.PERSIST}, orphanRemoval = true)
 	private QuizAnswer answer;
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)

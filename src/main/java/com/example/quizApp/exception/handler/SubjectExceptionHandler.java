@@ -11,7 +11,6 @@ public class SubjectExceptionHandler {
 	
 	@ExceptionHandler(value = SubjectNotFoundException.class)
 	ResponseEntity<String> subjectNotFound(SubjectNotFoundException e) {
-		return ResponseEntity.status(404).body("Subject not found");
+		return ResponseEntity.status(404).body(e.getMessage());
 	}
-
 }

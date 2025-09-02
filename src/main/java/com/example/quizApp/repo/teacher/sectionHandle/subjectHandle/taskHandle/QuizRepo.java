@@ -4,8 +4,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.Quiz;
+import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.Subject;
+
 
 @Repository
-public interface QuizRepo extends JpaRepository<Quiz, Integer>{
-
+public interface QuizRepo extends JpaRepository<Quiz, Integer> {
+	
+	void deleteByNumberAndSubjectOwner(int number, Subject subjectOwner);
 }

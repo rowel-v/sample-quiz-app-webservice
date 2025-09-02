@@ -2,6 +2,7 @@ package com.example.quizApp.result.teacher.task;
 
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 
 public class QuizResult {
 
@@ -38,4 +39,26 @@ public class QuizResult {
 		}
 	}
 
+	@Accessors(chain = true)
+	public enum Delete {
+		QUIZ_DELETE_SUCCESS(null),
+		QUIZ_NUMBER_NOT_FOUND("Quiz number %d not found on subject %s.");
+		
+		private String info;
+		
+		@Setter private int quizNumber;
+		@Setter private String quizSubject;
+		
+		public String getInfo() {
+			return switch (this) {
+			case QUIZ_NUMBER_NOT_FOUND -> String.format(info, quizNumber, quizSubject);
+			case QUIZ_DELETE_SUCCESS -> null;
+			};
+		}
+		
+		private Delete(String info) {
+			this.info = info;
+		}
+	}
+	
 }

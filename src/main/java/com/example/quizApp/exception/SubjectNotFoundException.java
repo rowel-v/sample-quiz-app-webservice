@@ -6,7 +6,11 @@ public class SubjectNotFoundException extends RuntimeException {
 	 * 
 	 */
 	private static final long serialVersionUID = -2256633989997924229L;
-
+	
+	public SubjectNotFoundException(String subjectName) {
+		super("Subject " + subjectName + " Not Found");
+	}
+	
 	public SubjectNotFoundException() {
 		super("Subject Not Found");
 	}
