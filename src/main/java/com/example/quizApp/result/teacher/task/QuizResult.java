@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 public class QuizResult {
 
+	@Accessors(chain = true)
 	@RequiredArgsConstructor
 	public enum Add {
 		
@@ -39,12 +40,13 @@ public class QuizResult {
 		}
 	}
 
+	@RequiredArgsConstructor
 	@Accessors(chain = true)
 	public enum Delete {
 		QUIZ_DELETE_SUCCESS(null),
 		QUIZ_NUMBER_NOT_FOUND("Quiz number %d not found on subject %s.");
 		
-		private String info;
+		private final String info;
 		
 		@Setter private int quizNumber;
 		@Setter private String quizSubject;
@@ -54,10 +56,6 @@ public class QuizResult {
 			case QUIZ_NUMBER_NOT_FOUND -> String.format(info, quizNumber, quizSubject);
 			case QUIZ_DELETE_SUCCESS -> null;
 			};
-		}
-		
-		private Delete(String info) {
-			this.info = info;
 		}
 	}
 	

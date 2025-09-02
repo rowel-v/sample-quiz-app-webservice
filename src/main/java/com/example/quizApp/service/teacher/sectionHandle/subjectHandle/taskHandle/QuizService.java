@@ -15,9 +15,6 @@ import com.example.quizApp.exception.SubjectNotFoundException;
 import com.example.quizApp.exception.TeacherNotFoundException;
 import com.example.quizApp.exception.UnauthorizedException;
 import com.example.quizApp.mapper.task.QuizMapper;
-import com.example.quizApp.model.teacher.Teacher;
-import com.example.quizApp.model.teacher.sectionHandle.Section;
-import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.Subject;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.Quiz;
 import com.example.quizApp.model.teacher.sectionHandle.subjectHandle.taskHandle.QuizChoices;
 import com.example.quizApp.repo.teacher.account.TeacherAccountRepo;
@@ -27,7 +24,6 @@ import com.example.quizApp.result.teacher.task.QuizResult.Add;
 import com.example.quizApp.result.teacher.task.QuizResult.Delete;
 
 import lombok.RequiredArgsConstructor;
-
 
 @Service @RequiredArgsConstructor
 public class QuizService {
@@ -43,76 +39,66 @@ public class QuizService {
 	};
 
 	public QuizResult.Add addQuiz(AddQuizRequest request, String sectionOwnerName, String subjectOwnerName) {
-		return teacherAccountRepo.findByUsername(accountOwnerUsername.get())
-				.map(acc -> {
-					Teacher teacherOwner = acc.getTeacher();
 
-					if (teacherOwner != null) {
+		QuizResult.Add result;
 
-						Section sectionOwner = teacherOwner.getSections().stream()
-								.filter(sec -> sec.getName().equals(sectionOwnerName))
-								.findFirst()
-								.orElseThrow(() -> new SectionNotFoundException());
+		Quiz quizReq = QuizMapper.INSTANCE.toEntity(request);
 
-						Subject subjectOwner = sectionOwner.getSubjects().stream()
-								.filter(sub -> sub.getName().equals(subjectOwnerName))
-								.findFirst()
-								.orElseThrow(() -> new SubjectNotFoundException());
+		Integer quizNum = quizReq.getNumber();
+		String quizQues = quizReq.getQuestion();
+		Character quizAns = quizReq.getAnswer().get();
 
-						Quiz quizReq = QuizMapper.INSTANCE.toEntity(request);
+		boolean quizAnswerNotOnChoices = quizReq.getChoices().stream().map(QuizChoices::getLetter).noneMatch(quizAns::equals);
 
-						var quizNum = quizReq.getNumber();
-						var quizQues = quizReq.getQuestion();
-						Character quizAns = quizReq.getAnswer().get();
+		if (quizAnswerNotOnChoices) {
+			result = Add.QUZ_ANSWER_NOT_ON_CHOICES;
+			result.setAnswer(quizAns).setQuizSubject(subjectOwnerName);
+			return result;
+		}
 
-						boolean quizAnswerNotOnChoices = quizReq.getChoices().stream()
-								.map(QuizChoices::getLetter)
-								.noneMatch(quizAns::equals);
+		var accountOwner = teacherAccountRepo.findByUsername(accountOwnerUsername.get())
+				.orElseThrow(UnauthorizedException::new);
 
-						QuizResult.Add result;
+		var teacher = Optional.of(accountOwner.getTeacher()).orElseThrow(TeacherNotFoundException::new);
 
-						if (quizAnswerNotOnChoices) {
-							result = Add.QUZ_ANSWER_NOT_ON_CHOICES;
-							result.setAnswer(quizAns);
-							result.setQuizSubject(subjectOwnerName);
-							return result;
-						}
+		var sectionOwner = teacher.getSections().stream().filter(s -> s.getName().equals(sectionOwnerName))
+				.findFirst().orElseThrow(SectionNotFoundException::new);
 
-						var quizNumberAlreadyExists = subjectOwner.getQuizHandle().stream()
-								.mapToInt(Quiz::getNumber).anyMatch(v -> v == quizNum);
+		var subjectOwner = sectionOwner.getSubjects().stream()
+				.filter(s -> s.getName().equals(subjectOwnerName))
+				.findFirst().orElseThrow(SubjectNotFoundException::new);
 
-						var quizQuestionAlreadyExists = subjectOwner.getQuizHandle().stream()
-								.map(Quiz::getQuestion).anyMatch(quizQues::equals);
+		boolean quizNumberAlreadyExists = subjectOwner.getQuizHandle().stream()
+				.mapToInt(Quiz::getNumber).anyMatch(quizNum::equals);
 
-						if (quizNumberAlreadyExists && quizQuestionAlreadyExists) {
-							result = Add.QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS;
-						}
-						else if (quizNumberAlreadyExists) result = Add.QUIZ_NUMBER_ALREADY_EXISTS;
-						else if (quizQuestionAlreadyExists) result = Add.QUIZ_QUESTION_ALREADY_EXISTS;
-						else {
-							subjectOwner.getQuizHandle().add(quizReq);
-							quizReq.setSubjectOwner(subjectOwner);
-							quizReq.getChoices().forEach(c -> c.setQuizOwner(quizReq));
-							quizReq.getAnswer().setQuizOwner(quizReq);
-							quizRepo.save(quizReq);
-							result = Add.QUIZ_ADDED_SUCCESS;
-						}
+		boolean quizQuestionAlreadyExists = subjectOwner.getQuizHandle().stream()
+				.map(Quiz::getQuestion).anyMatch(quizQues::equals);
 
-						result.setQuizNumber(quizNum);
-						result.setQuizQuestion(quizQues);
-						result.setQuizSubject(subjectOwnerName);
-						return result;
-					}
-					throw new TeacherNotFoundException();
-				})
-				.orElseThrow(() -> new UnauthorizedException());
+		if (quizNumberAlreadyExists && quizQuestionAlreadyExists) {
+			result = Add.QUIZ_NUMBER_ALREADY_EXISTS_AND_QUIZ_QUESTION_ALREADY_EXISTS;
+		}
+		else if (quizNumberAlreadyExists) result = Add.QUIZ_NUMBER_ALREADY_EXISTS;
+		else if (quizQuestionAlreadyExists) result = Add.QUIZ_QUESTION_ALREADY_EXISTS;
+		else {
+			subjectOwner.getQuizHandle().add(quizReq);
+			quizReq.setSubjectOwner(subjectOwner);
+			quizReq.getChoices().forEach(c -> c.setQuizOwner(quizReq));
+			quizReq.getAnswer().setQuizOwner(quizReq);
+			quizRepo.save(quizReq);
+			result = Add.QUIZ_ADDED_SUCCESS;
+		}
+
+		result.setQuizNumber(quizNum);
+		result.setQuizQuestion(quizQues);
+		result.setQuizSubject(subjectOwnerName);
+		return result;
 	}
 
 	@Transactional
 	public QuizResult.Delete removeQuiz(DeleteQuizRequest req) {
 
 		var accountOwner = teacherAccountRepo.findByUsername(accountOwnerUsername.get())
-				.orElseThrow(TeacherNotFoundException::new);
+				.orElseThrow(UnauthorizedException::new);
 
 		var teacher = Optional.of(accountOwner.getTeacher()).orElseThrow(TeacherNotFoundException::new);
 
@@ -129,7 +115,7 @@ public class QuizService {
 		var quizFound = subjectOwner.getQuizHandle().stream()
 				.mapToInt(Quiz::getNumber)
 				.anyMatch(req.getQuizNumber()::equals);
-		
+
 		if (!quizFound) {
 			QuizResult.Delete result = Delete.QUIZ_NUMBER_NOT_FOUND;
 			result.setQuizNumber(req.getQuizNumber()).setQuizSubject(req.getSubjectName());
